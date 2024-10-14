@@ -6,18 +6,21 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:49:45 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/14 20:51:57 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/14 20:57:07 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
+// it just exits the program and prints the error message on stderr
 void	panic(char *msg)
 {
 	perror(msg);
 	exit(1);
 }
 
+// it creates a child process and returns the pid of the child process
+// if the fork fails, it calls the panic function
 pid_t	fork1(void)
 {
 	pid_t	pid;
@@ -28,6 +31,8 @@ pid_t	fork1(void)
 	return (pid);
 }
 
+// it reads the command from the standard input
+// latter readline will be used to read the command
 int getcmd(char *buf, int nbuf)
 {
 	if (isatty(fileno(stdin)))
@@ -39,6 +44,8 @@ int getcmd(char *buf, int nbuf)
 	return (0);
 }
 
+// it runs the command
+// based on the type of the command, it will execute the command
 void	runcmd(t_cmd *cmd)
 {
 	int		p[2];
@@ -95,6 +102,8 @@ void	runcmd(t_cmd *cmd)
 	exit(0);
 }
 
+// it parses the command
+// it will return a pointer to the command
 t_cmd	*parsecmd(char *s)
 {
 	t_cmd	*cmd;
@@ -155,6 +164,7 @@ t_cmd	*parsecmd(char *s)
 	return (cmd);
 }
 
+// it displays a new prompt
 void	display_new_prompt(int sig)
 {
 	(void)sig;
@@ -168,8 +178,10 @@ int	main(int argc, char const *argv[], char const *envp[])
 	(void)argc;
 	(void)argv;
 	(void)envp;
+	// it sets the signal handler for the SIGINT and SIGQUIT signals
 	signal(SIGINT, display_new_prompt);
-	signal(SIGQUIT, SIG_IGN);	
+	signal(SIGQUIT, SIG_IGN);
+	// it reads the command from the standard input
 	while (getcmd(buf, sizeof(buf)) >= 0)
 	{
 		if (strncmp(buf, "cd", 2) == 0)
