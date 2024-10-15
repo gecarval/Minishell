@@ -1,0 +1,4 @@
+tags
+minishell
+./*.o
+./libft/libft.a

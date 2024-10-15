@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:49:45 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/14 20:57:07 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/15 14:22:09 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,13 +171,16 @@ void	display_new_prompt(int sig)
 	fprintf(stdout, "\n%s", PROMPT);
 }
 
-int	main(int argc, char const *argv[], char const *envp[])
+int	main(int argc, char **argv, char **envp)
 {
-	char	buf[MAX_CMD];
+	char		buf[MAX_CMD];
+	t_minishell	shell;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
+	shell.argc = argc;
+	shell.argv = argv;
+	shell.envp = envp;
+	shell.argc++;
+	shell.argc--;
 	// it sets the signal handler for the SIGINT and SIGQUIT signals
 	signal(SIGINT, display_new_prompt);
 	signal(SIGQUIT, SIG_IGN);
