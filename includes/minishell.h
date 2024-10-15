@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/15 14:28:44 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/15 14:31:28 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,16 +76,16 @@ typedef struct s_backcmd
 	struct s_cmd	*cmd;
 }					t_backcmd;
 
-typedef struct	s_minishell
+typedef struct s_minishell
 {
-	int	argc;
-	char	**argv;
-	char	**envp;
-	t_cmd	*cmd;
-	char	buf[MAX_CMD];
-	int	fdout;
-	int	fdint;
-	int	pipe[2];
-}	t_minishell;
+	int				argc;
+	char			**argv;
+	char			**envp;
+	t_cmd			*cmd;
+	char			buf[MAX_CMD];
+	int				fdout;
+	int				fdint;
+	int				pipe[2];
+}					t_minishell;
 
 #endif

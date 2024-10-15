@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:49:45 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/15 14:29:51 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/15 14:31:37 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ pid_t	fork1(void)
 
 // it reads the command from the standard input
 // latter readline will be used to read the command
-int getcmd(char *buf, int nbuf)
+int	getcmd(char *buf, int nbuf)
 {
 	if (isatty(fileno(stdin)))
 		fprintf(stdout, "%s", PROMPT);
@@ -56,48 +56,48 @@ void	runcmd(t_cmd *cmd)
 		exit(0);
 	switch (cmd->type)
 	{
-		case EXEC:
-			execvp(((t_execcmd *)cmd)->argv[0], ((t_execcmd *)cmd)->argv);
-			break ;
-		case REDIR:
-			break ;
-		case PIPE:
-			left = ((t_pipecmd *)cmd)->left;
-			right = ((t_pipecmd *)cmd)->right;
-			if (pipe(p) < 0)
-				panic("pipe");
-			if (fork1() == 0)
-			{
-				close(1);
-				dup(p[1]);
-				close(p[0]);
-				close(p[1]);
-				runcmd(left);
-			}
-			if (fork1() == 0)
-			{
-				close(0);
-				dup(p[0]);
-				close(p[0]);
-				close(p[1]);
-				runcmd(right);
-			}
+	case EXEC:
+		execvp(((t_execcmd *)cmd)->argv[0], ((t_execcmd *)cmd)->argv);
+		break ;
+	case REDIR:
+		break ;
+	case PIPE:
+		left = ((t_pipecmd *)cmd)->left;
+		right = ((t_pipecmd *)cmd)->right;
+		if (pipe(p) < 0)
+			panic("pipe");
+		if (fork1() == 0)
+		{
+			close(1);
+			dup(p[1]);
 			close(p[0]);
 			close(p[1]);
-			wait(0);
-			wait(0);
-			break ;
-		case LIST:
-			left = ((t_listcmd *)cmd)->left;
-			right = ((t_listcmd *)cmd)->right;
-			if (fork1() == 0)
-				runcmd(left);
-			wait(0);
+			runcmd(left);
+		}
+		if (fork1() == 0)
+		{
+			close(0);
+			dup(p[0]);
+			close(p[0]);
+			close(p[1]);
 			runcmd(right);
-			break ;
-		case BACK:
-			runcmd(((t_backcmd *)cmd)->cmd);
-			break ;
+		}
+		close(p[0]);
+		close(p[1]);
+		wait(0);
+		wait(0);
+		break ;
+	case LIST:
+		left = ((t_listcmd *)cmd)->left;
+		right = ((t_listcmd *)cmd)->right;
+		if (fork1() == 0)
+			runcmd(left);
+		wait(0);
+		runcmd(right);
+		break ;
+	case BACK:
+		runcmd(((t_backcmd *)cmd)->cmd);
+		break ;
 	}
 	exit(0);
 }
@@ -107,6 +107,12 @@ void	runcmd(t_cmd *cmd)
 t_cmd	*parsecmd(char *s)
 {
 	t_cmd	*cmd;
+		t_pipecmd *pcmd;
+		t_listcmd *lcmd;
+		t_execcmd *ecmd;
+		char *argv[MAX_CMD];
+		char *eargv[MAX_CMD];
+		int i;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
@@ -114,8 +120,6 @@ t_cmd	*parsecmd(char *s)
 	ft_bzero(cmd, sizeof(t_cmd));
 	if (strstr(s, "|"))
 	{
-		t_pipecmd	*pcmd;
-
 		pcmd = malloc(sizeof(t_pipecmd));
 		if (pcmd == NULL)
 			panic("malloc");
@@ -127,8 +131,6 @@ t_cmd	*parsecmd(char *s)
 	}
 	else if (strstr(s, ";"))
 	{
-		t_listcmd	*lcmd;
-
 		lcmd = malloc(sizeof(t_listcmd));
 		if (lcmd == NULL)
 			panic("malloc");
@@ -140,11 +142,6 @@ t_cmd	*parsecmd(char *s)
 	}
 	else
 	{
-		t_execcmd	*ecmd;
-		char		*argv[MAX_CMD];
-		char		*eargv[MAX_CMD];
-		int			i;
-
 		ecmd = malloc(sizeof(t_execcmd));
 		if (ecmd == NULL)
 			panic("malloc");
