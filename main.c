@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:49:45 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/15 14:22:09 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/15 14:29:51 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,31 +173,28 @@ void	display_new_prompt(int sig)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char		buf[MAX_CMD];
 	t_minishell	shell;
 
 	shell.argc = argc;
 	shell.argv = argv;
 	shell.envp = envp;
-	shell.argc++;
-	shell.argc--;
 	// it sets the signal handler for the SIGINT and SIGQUIT signals
 	signal(SIGINT, display_new_prompt);
 	signal(SIGQUIT, SIG_IGN);
 	// it reads the command from the standard input
-	while (getcmd(buf, sizeof(buf)) >= 0)
+	while (getcmd(shell.buf, sizeof(shell.buf)) >= 0)
 	{
-		if (strncmp(buf, "cd", 2) == 0)
+		if (strncmp(shell.buf, "cd", 2) == 0)
 		{
-			buf[strlen(buf) - 1] = 0;
-			if (chdir(buf + 3) < 0)
+			shell.buf[strlen(shell.buf) - 1] = 0;
+			if (chdir(shell.buf + 3) < 0)
 				perror("cd");
 			continue ;
 		}
-		if (strncmp(buf, "exit", 4) == 0)
+		if (strncmp(shell.buf, "exit", 4) == 0)
 			exit(0);
 		else if (fork1() == 0)
-			runcmd(parsecmd(buf));
+			runcmd(parsecmd(shell.buf));
 		wait(0);
 	}
 	return (0);

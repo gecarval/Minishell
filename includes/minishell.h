@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/15 14:20:25 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/15 14:28:44 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,10 @@ typedef struct	s_minishell
 	char	**argv;
 	char	**envp;
 	t_cmd	*cmd;
+	char	buf[MAX_CMD];
+	int	fdout;
+	int	fdint;
+	int	pipe[2];
 }	t_minishell;
 
 #endif
