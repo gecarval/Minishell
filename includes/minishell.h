@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/15 14:31:28 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/21 09:34:18 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 # define PROMPT "minishell$ "
 # define MAX_HISTORY 1024
-# define MAX_CMD 4096
+# define CMD_BUFFER 1024
 # define EXEC 1
 # define REDIR 2
 # define PIPE 3
@@ -36,56 +36,31 @@
 
 typedef struct s_cmd
 {
+	char			*cmd;
+	char			**args;
+	char			*str_to_print;
+	int				argc;
 	int				type;
+	int				fd_in;
+	int				fd_out;
+	struct s_cmd	*next;
 }					t_cmd;
 
-typedef struct s_execcmd
-{
-	int				type;
-	char			**argv;
-	char			**eargv;
-}					t_execcmd;
 
-typedef struct s_redircmd
-{
-	int				type;
-	struct s_cmd	*cmd;
-	char			*file;
-	char			*efile;
-	int				mode;
-	int				fd;
-}					t_redircmd;
+// BUILTINS
 
-typedef struct s_pipecmd
-{
-	int				type;
-	struct s_cmd	*left;
-	struct s_cmd	*right;
-}					t_pipecmd;
+// FREE
+void				free_cmd(t_cmd **cmd);
+void				ft_free_args(char **args);
 
-typedef struct s_listcmd
-{
-	int				type;
-	struct s_cmd	*left;
-	struct s_cmd	*right;
-}					t_listcmd;
+// EXEC
+void				add_cmd(t_cmd **cmd, char **args);
+void				exec_cmd(t_cmd *cmd, char **envp);
 
-typedef struct s_backcmd
-{
-	int				type;
-	struct s_cmd	*cmd;
-}					t_backcmd;
-
-typedef struct s_minishell
-{
-	int				argc;
-	char			**argv;
-	char			**envp;
-	t_cmd			*cmd;
-	char			buf[MAX_CMD];
-	int				fdout;
-	int				fdint;
-	int				pipe[2];
-}					t_minishell;
+// PARSER_UTILS
+char				*ft_limit_buffer(char *line);
+char				*ft_espur_str(char *line);
+// PARSER
+void				parse_line(char *line, t_cmd **cmd);
 
 #endif
