@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/21 09:19:09 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/22 08:15:44 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,38 @@ char	*ft_espur_str(char *line)
 	}
 	new[j] = '\0';
 	return (new);
+}
+
+int	ft_is_pipe(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '|')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	ft_check_quotes(char *line)
+{
+	int	i;
+	int	quotes;
+
+	i = 0;
+	quotes = 0;
+	while (line[i])
+	{
+		if (line[i] == '\"' || line[i] == '\'')
+			quotes++;
+		i++;
+	}
+	if (quotes % 2 != 0)
+	{
+		printf("minishell: syntax error\n");
+		exit(1);
+	}
 }

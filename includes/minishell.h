@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/21 09:34:18 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/22 09:08:39 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,14 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }					t_cmd;
 
+typedef struct s_shell
+{
+	t_cmd			*cmd;
+	t_cmd			*new;
+	t_cmd			*last;
+	char			*line;
+	char			**envp;
+}					t_shell;
 
 // BUILTINS
 
@@ -54,13 +62,18 @@ void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
 
 // EXEC
-void				add_cmd(t_cmd **cmd, char **args);
-void				exec_cmd(t_cmd *cmd, char **envp);
+pid_t				ft_fork(void);
+void				add_cmd(t_shell *shell, char **args, int is_pipe);
+void				exec_cmd(t_shell *shell);
 
 // PARSER_UTILS
+void				add_args_and_output(t_shell *shell, char **args);
+void				ft_handle_ispipe(t_cmd *new, int is_pipe);
+void				ft_check_quotes(char *line);
 char				*ft_limit_buffer(char *line);
 char				*ft_espur_str(char *line);
+int					ft_is_pipe(char *line);
 // PARSER
-void				parse_line(char *line, t_cmd **cmd);
+void				parse_line(t_shell *shell);
 
 #endif

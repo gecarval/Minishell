@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/21 09:26:47 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/22 08:43:12 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,66 @@ pid_t	ft_fork(void)
 	return (pid);
 }
 
-void	exec_cmd(t_cmd *cmd, char **envp)
+void	ft_exec_child(t_cmd *cmd, char **envp)
 {
-	pid_t	pid;
-	int		status;
-
-	pid = ft_fork();
-	if (pid == 0)
+	if (cmd->type == EXEC)
 	{
-		if (cmd->fd_in != 0)
+		if (execve(cmd->cmd, cmd->args, envp) == -1)
 		{
-			dup2(cmd->fd_in, 0);
-			close(cmd->fd_in);
+			printf("minishell: %s: command not found\n", cmd->cmd);
+			exit(1);
 		}
-		if (cmd->fd_out != 1)
+	}
+	else if (cmd->type == PIPE)
+	{
+		if (dup2(cmd->fd_in, 0) == -1)
 		{
-			dup2(cmd->fd_out, 1);
-			close(cmd->fd_out);
+			printf("minishell: dup2 failed\n");
+			exit(1);
+		}
+		if (dup2(cmd->fd_out, 1) == -1)
+		{
+			printf("minishell: dup2 failed\n");
+			exit(1);
 		}
 		if (execve(cmd->cmd, cmd->args, envp) == -1)
-        {
-            printf("minishell: %s: command not found\n", cmd->cmd);
-            exit(1);
-        }
+		{
+			printf("minishell: %s: command not found\n", cmd->cmd);
+			exit(1);
+		}
 	}
-	else
-		waitpid(pid, &status, 0);
+}
+
+void ft_free_all(t_shell *shell)
+{
+	if (shell->cmd != NULL)
+		free_cmd(&shell->cmd);
+	if (shell->line != NULL)
+		free(shell->line);
+}
+
+void	exec_cmd(t_shell *shell)
+{
+	t_cmd	*cmd;
+	char	**envp;
+
+	cmd = shell->cmd;
+	envp = shell->envp;
+	while (cmd != NULL)
+	{
+		pid_t	pid;
+		int		status;
+
+		pid = ft_fork();
+		if (pid == 0)
+		{
+			ft_exec_child(cmd, envp);
+			ft_free_all(shell);
+		}
+		else
+		{
+			waitpid(pid, &status, 0);
+			cmd = cmd->next;
+		}
+	}
 }
