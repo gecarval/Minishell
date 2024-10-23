@@ -6,24 +6,18 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:11:24 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/22 08:15:44 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// This function limits the buffer size of the line
-// It returns NULL if the line is NULL
-// It returns NULL and prints a error message if the line is too long
-// Because some shells have a limit of characters in a command
 char	*ft_limit_buffer(char *line)
 {
     int		i;
 
     i = 0;
-	if (!line)
-		return (NULL);
-    while (line[i] != '\0' && i < CMD_BUFFER)
+    while (line[i] && i < CMD_BUFFER)
         i++;
     if (i >= CMD_BUFFER)
     {
@@ -34,7 +28,6 @@ char	*ft_limit_buffer(char *line)
     return (line);
 }
 
-// This function removes the extra spaces from the line
 char	*ft_espur_str(char *line)
 {
 	int		i;
@@ -63,7 +56,6 @@ char	*ft_espur_str(char *line)
 	return (new);
 }
 
-// This function checks if the line has a pipe
 int	ft_is_pipe(char *line)
 {
 	int	i;
@@ -78,7 +70,6 @@ int	ft_is_pipe(char *line)
 	return (0);
 }
 
-// This function checks if the line has unclosed quotes
 void	ft_check_quotes(char *line)
 {
 	int	i;

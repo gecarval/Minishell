@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:07:43 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/22 09:08:39 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,6 @@
 # define LIST 4
 # define BACK 5
 
-// STRUCTS
-
-// This structure is used to store the command structure in a List
-// It contains the command
-// The arguments and number of arguments
-// The type of command (pipe or just exec)
-// The input file descriptor and output file descriptor
-// The string to print and the next command
 typedef struct s_cmd
 {
 	char			*cmd;
@@ -54,13 +46,11 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }					t_cmd;
 
-// This structure is used to store the shell data
-// It contains the command structure List
-// The line read from the user
-// The environment variables
 typedef struct s_shell
 {
 	t_cmd			*cmd;
+	t_cmd			*new;
+	t_cmd			*last;
 	char			*line;
 	char			**envp;
 }					t_shell;
@@ -70,15 +60,14 @@ typedef struct s_shell
 // FREE
 void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
-void				ft_free_all(t_shell *shell);
 
 // EXEC
-pid_t				ft_fork(t_shell *shell);
+pid_t				ft_fork(void);
 void				add_cmd(t_shell *shell, char **args, int is_pipe);
 void				exec_cmd(t_shell *shell);
 
 // PARSER_UTILS
-void				add_args_and_output(t_cmd *new, char **args);
+void				add_args_and_output(t_shell *shell, char **args);
 void				ft_handle_ispipe(t_cmd *new, int is_pipe);
 void				ft_check_quotes(char *line);
 char				*ft_limit_buffer(char *line);
