@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:13:58 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/23 09:39:53 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	ft_exec_child(t_shell *shell)
 // It forks the process
 // If the pid is 0, it executes the child process
 // If the pid is not 0, it waits for the child process to finish
-// Then it goes to the next command
 void	exec_cmd(t_shell *shell)
 {
 	t_cmd	*cmd;
