@@ -6,13 +6,14 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/29 12:51:41 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:16:50 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_free_all(t_shell *shell)
+// Just some free functions I think there is no need to explain
+void ft_free_all(t_shell *shell)
 {
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);
@@ -37,12 +38,12 @@ void	free_cmd(t_cmd **cmd)
 	while (*cmd != NULL)
 	{
 		tmp = (*cmd)->next;
-		if ((*cmd)->args != NULL)
+		if ((*cmd)->args)
 			ft_free_args((*cmd)->args);
-		if ((*cmd)->str_to_print != NULL)
-			free((*cmd)->str_to_print);
-		if ((*cmd)->cmd != NULL)
+		if ((*cmd)->cmd)
 			free((*cmd)->cmd);
+		if ((*cmd)->str_to_print)
+			free((*cmd)->str_to_print);
 		free(*cmd);
 		*cmd = tmp;
 	}
