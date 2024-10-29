@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:49:25 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:04:30 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ char	*ft_limit_buffer(char *line)
     int		i;
 
     i = 0;
-    while (line[i] && i < CMD_BUFFER)
+	if (!line)
+		return (NULL);
+    while (line[i] != '\0' && i < CMD_BUFFER)
         i++;
     if (i >= CMD_BUFFER)
     {

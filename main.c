@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:49:28 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 12:47:40 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,13 @@ void	ft_print_cmd(t_cmd *cmd)
 	while (tmp != NULL)
 	{
 		printf("cmd: %s\n", tmp->cmd);
-		i = 0;
-		while (tmp->args[i] != NULL)
-		{
-			printf("arg[%d]: %s\n", i, tmp->args[i]);
-			i++;
-		}
+		i = -1;
+		if (tmp->args != NULL)
+			while (tmp->args[++i] != NULL)
+				printf("arg[%d]: %s\n", i, tmp->args[i]);
 		printf("argc: %d\n", tmp->argc);
-		printf("str_to_print: %s\n", tmp->str_to_print);
+		if (tmp->str_to_print != NULL)
+			printf("str_to_print: %s\n", tmp->str_to_print);
 		printf("type: %d\n", tmp->type);
 		printf("fd_in: %d\n", tmp->fd_in);
 		printf("fd_out: %d\n", tmp->fd_out);

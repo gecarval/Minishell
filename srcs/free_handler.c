@@ -6,11 +6,19 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:49:29 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 12:51:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void	ft_free_all(t_shell *shell)
+{
+	if (shell->cmd != NULL)
+		free_cmd(&shell->cmd);
+	if (shell->line != NULL)
+		free(shell->line);
+}
 
 void	ft_free_args(char **args)
 {
@@ -29,8 +37,12 @@ void	free_cmd(t_cmd **cmd)
 	while (*cmd != NULL)
 	{
 		tmp = (*cmd)->next;
-		ft_free_args((*cmd)->args);
-        free((*cmd)->cmd);
+		if ((*cmd)->args != NULL)
+			ft_free_args((*cmd)->args);
+		if ((*cmd)->str_to_print != NULL)
+			free((*cmd)->str_to_print);
+		if ((*cmd)->cmd != NULL)
+			free((*cmd)->cmd);
 		free(*cmd);
 		*cmd = tmp;
 	}

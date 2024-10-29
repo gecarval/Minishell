@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:48:57 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 12:32:36 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,10 @@ typedef struct s_shell
 // FREE
 void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
+void				ft_free_all(t_shell *shell);
 
 // EXEC
-pid_t				ft_fork(void);
+pid_t				ft_fork(t_shell *shell);
 void				add_cmd(t_shell *shell, char **args, int is_pipe);
 void				exec_cmd(t_shell *shell);
 
