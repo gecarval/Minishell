@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/29 13:16:26 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:24:55 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void				add_cmd(t_shell *shell, char **args, int is_pipe);
 void				exec_cmd(t_shell *shell);
 
 // PARSER_UTILS
-void				add_args_and_output(t_shell *shell, char **args);
+void				add_args_and_output(t_cmd *new, char **args);
 void				ft_handle_ispipe(t_cmd *new, int is_pipe);
 void				ft_check_quotes(char *line);
 char				*ft_limit_buffer(char *line);

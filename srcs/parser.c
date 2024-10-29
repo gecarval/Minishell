@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/29 13:16:21 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:24:20 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,11 @@ char	*ft_get_cmdoutput(char **args)
 {
 	char	*str;
 	char	*tmp;
+	int		flag;
 	int		i;
 
 	i = 0;
+	flag = 0;
 	str = NULL;
 	while (args[i] != NULL)
 	{
@@ -82,9 +84,9 @@ void	add_args_and_output(t_cmd *new, char **args)
 	i = 0;
 	while (args[i] != NULL)
 		i++;
-	shell->new->argc = i;
-	shell->new->args = ft_get_flags(shell, args);
-	shell->new->str_to_print = ft_get_cmdoutput(args);
+	new->argc = i;
+	new->args = ft_get_flags(new, args);
+	new->str_to_print = ft_get_cmdoutput(args);
 }
 
 void	ft_handle_ispipe(t_cmd *new, int is_pipe)
@@ -105,16 +107,19 @@ void	ft_handle_ispipe(t_cmd *new, int is_pipe)
 
 void	add_cmd(t_shell *shell, char **args, int is_pipe)
 {
-	shell->new = NULL;
-	shell->new = (t_cmd *)malloc(sizeof(t_cmd));
+	t_cmd	*new;
+	t_cmd	*last;
+
+	new = NULL;
+	new = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!shell->new)
 		return ;
-	shell->new->cmd = args[0];
-	add_args_and_output(shell, args + 1);
-	shell->new->next = NULL;
+	new->cmd = ft_strdup(args[0]);
+	add_args_and_output(new, args + 1);
+	new->next = NULL;
 	ft_handle_ispipe(shell->new, is_pipe);
 	if (!shell->cmd)
-		shell->cmd = shell->new;
+		shell->cmd = new;
 	else
 	{
 		last = shell->cmd;

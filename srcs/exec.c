@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/29 13:16:37 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:23:00 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ pid_t	ft_fork(void)
 	return (pid);
 }
 
-void	ft_exec_child(t_shell *shell)
+void	ft_exec_child(t_cmd *cmd, char **envp)
 {
 	if (cmd->type == EXEC)
 	{
@@ -66,10 +66,8 @@ void ft_free_all(t_shell *shell)
 void	exec_cmd(t_shell *shell)
 {
 	t_cmd	*cmd;
-	char	**envp;
 
 	cmd = shell->cmd;
-	envp = shell->envp;
 	while (cmd != NULL)
 	{
 		pid_t	pid;
@@ -78,7 +76,7 @@ void	exec_cmd(t_shell *shell)
 		pid = ft_fork();
 		if (pid == 0)
 		{
-			ft_exec_child(cmd, envp);
+			ft_exec_child(cmd, shell->envp);
 			ft_free_all(shell);
 		}
 		else
