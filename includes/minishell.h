@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:07:43 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/31 12:56:28 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include <termios.h>
 
 # define PROMPT "minishell$ "
-# define MAX_HISTORY 1024
 # define CMD_BUFFER 1024
 # define EXEC 1
 # define REDIR 2
@@ -46,7 +45,6 @@ typedef struct s_cmd
 {
 	char			*cmd;
 	char			**args;
-	char			*str_to_print;
 	int				argc;
 	int				type;
 	int				fd_in;

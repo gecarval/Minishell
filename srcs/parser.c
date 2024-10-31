@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:04:42 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/10/31 12:59:19 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ char	**ft_get_flags(t_cmd *new, char **args)
 		return (NULL);
 	if (ft_strncmp(new->cmd, "echo", 4) == 0 && args[0][0] != '-')
 		return (NULL);
-	while (args[++i] != NULL)
-		if (args[i][0] == '-')
+	while (args[i] != NULL)
+		if (args[i++][0] == '-')
 			flag_count++;
 	if (flag_count == 0)
 		return (NULL);
@@ -80,6 +80,25 @@ char	*ft_get_cmdoutput(char **args)
 	return (str);
 }
 
+// ft_strdup but for matrix
+char	**ft_matdup(char **mat)
+{
+	char	**new;
+	int		i;
+
+	i = 0;
+	if (mat == NULL)
+		return (NULL);
+	while (mat[i] != NULL)
+		i++;
+	new = (char **)malloc(sizeof(char *) * (i + 1));
+	i = -1;
+	while (mat[++i] != NULL)
+		new[i] = ft_strdup(mat[i]);
+	new[i] = NULL;
+	return (new);
+}
+
 // This function adds the arguments and the output to the command structure
 // It counts the number of arguments
 // It gets the flags using the ft_get_flags function
@@ -92,8 +111,7 @@ void	add_args_and_output(t_cmd *new, char **args)
 	while (args[i] != NULL)
 		i++;
 	new->argc = i;
-	new->args = ft_get_flags(new, args);
-	new->str_to_print = ft_get_cmdoutput(args);
+	new->args = ft_matdup(args);
 }
 
 // This function checks if the line contains a pipe
@@ -130,7 +148,7 @@ void	add_cmd(t_shell *shell, char **args, int is_pipe)
 		return ;
 	new->next = NULL;
 	new->cmd = ft_strdup(args[0]);
-	add_args_and_output(new, args + 1);
+	add_args_and_output(new, args);
 	ft_handle_ispipe(new, is_pipe);
 	if (!shell->cmd)
 		shell->cmd = new;
