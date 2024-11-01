@@ -6,14 +6,14 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/14 14:50:48 by gecarval          #+#    #+#              #
-#    Updated: 2024/10/21 09:22:56 by gecarval         ###   ########.fr        #
+#    Updated: 2024/11/01 08:59:21 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Variables
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = main.c ./srcs/free_handler.c ./srcs/parser_utils.c ./srcs/parser.c ./srcs/exec.c
+SRCS = main.c ./srcs/free_handler.c ./srcs/parser_utils.c ./srcs/parser.c ./srcs/exec.c ./srcs/built_in.c ./srcs/ft_parser_split.c
 OBJS = $(SRCS:.c=.o)
 NAME = minishell
 LIBFT = libft/libft.a

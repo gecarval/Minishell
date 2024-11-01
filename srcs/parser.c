@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/31 12:59:19 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/01 09:36:49 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,17 +120,9 @@ void	add_args_and_output(t_cmd *new, char **args)
 void	ft_handle_ispipe(t_cmd *new, int is_pipe)
 {
 	if (is_pipe == 1)
-	{
 		new->type = PIPE;
-		new->fd_in = 0;
-		new->fd_out = 1;
-	}
 	else
-	{
 		new->type = EXEC;
-		new->fd_in = 0;
-		new->fd_out = 1;
-	}
 }
 
 // This function adds the command to the command structure List
@@ -169,7 +161,6 @@ void	parse_line(t_shell *shell)
 {
 	char	**cmds;
 	char	**args;
-	char	*new_line;
 	int		i;
 
 	i = 0;
@@ -179,11 +170,9 @@ void	parse_line(t_shell *shell)
 	cmds = ft_split(shell->line, '|');
 	while (cmds[i])
 	{
-		new_line = ft_espur_str(cmds[i]);
-		args = ft_split(new_line, ' ');
+		args = ft_parser_split(shell->line, " ");
 		add_cmd(shell, args, ft_is_pipe(shell->line));
 		ft_free_args(args);
-		free(new_line);
 		free(cmds[i]);
 		i++;
 	}

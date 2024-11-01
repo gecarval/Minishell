@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/31 12:30:48 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/01 09:44:08 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,30 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 	}
 }
 
-void	ft_exec_child(t_shell *shell)
+void	ft_exec_on_child(t_shell *shell)
 {
 	char	*bin_route;
 
-	bin_route = ft_strjoin("/bin/", shell->cmd->cmd);
+	bin_route = NULL;
+	if (shell->cmd->cmd[0] != '/' && ft_strncmp(shell->cmd->cmd, "./", 2) != 0)
+		bin_route = ft_strjoin("/bin/", shell->cmd->cmd);
+	if (bin_route == NULL)
+		bin_route = ft_strdup(shell->cmd->cmd);
+	printf("bin_route: %s\n", bin_route);
 	if (shell->cmd->type == EXEC)
 	{
 		ft_execve(bin_route, shell->cmd->args, shell->envp, shell);
 	}
 	else if (shell->cmd->type == PIPE)
 	{
-		if (dup2(shell->cmd->fd_in, 0) == -1)
+		if (dup2(shell->fd_in, 0) == -1)
 		{
 			printf("minishell: dup2 failed\n");
 			free(bin_route);
 			ft_free_all(shell);
 			exit(1);
 		}
-		if (dup2(shell->cmd->fd_out, 1) == -1)
+		if (dup2(shell->fd_out, 1) == -1)
 		{
 			printf("minishell: dup2 failed\n");
 			free(bin_route);
@@ -67,7 +72,34 @@ void	ft_exec_child(t_shell *shell)
 		}
 		ft_execve(shell->cmd->cmd, shell->cmd->args, shell->envp, shell);
 	}
-	free(bin_route);
+	if (bin_route != NULL)
+		free(bin_route);
+}
+
+// There is some builtins that are executed on the parent process
+// This function checks if the command is a builtin
+// If it is, it executes the builtin
+// Because cd or pwd etc and etc need to execute on the parent process
+// To changem the directory or print the working directory
+// Since child processes are independent from the parent process
+int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
+{
+	int	workdone;
+
+	workdone = 0;
+	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+		workdone = ft_exit(shell);
+	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
+		workdone = ft_cd(cmd);
+	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
+		workdone = ft_pwd();
+	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
+		workdone = ft_export(cmd, shell);
+	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
+		workdone = ft_unset(cmd, shell);
+	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
+		workdone = ft_env(shell);
+	return (workdone);
 }
 
 // This function executes the command
@@ -84,10 +116,15 @@ void	exec_cmd(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd != NULL)
 	{
+		if (ft_exec_on_parent(cmd, shell) == 1)
+		{
+			cmd = cmd->next;
+			continue ;
+		}
 		pid = ft_fork(shell);
 		if (pid == 0)
 		{
-			ft_exec_child(shell);
+			ft_exec_on_child(shell);
 			ft_free_all(shell);
 			exit(0);
 		}

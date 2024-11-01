@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/31 12:56:28 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/01 09:46:01 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,15 @@ typedef struct s_cmd
 	char			**args;
 	int				argc;
 	int				type;
-	int				fd_in;
-	int				fd_out;
 	struct s_cmd	*next;
 }					t_cmd;
+
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
 
 // This structure is used to store the shell data
 // It contains the command structure List
@@ -59,11 +64,31 @@ typedef struct s_cmd
 typedef struct s_shell
 {
 	t_cmd			*cmd;
+	t_env			*envp_list;
 	char			*line;
 	char			**envp;
+	int				fd_in;
+	int				fd_out;
 }					t_shell;
 
 // BUILTINS
+int					ft_exit(t_shell *shell);
+int					ft_cd(t_cmd *cmd);
+int					ft_pwd(void);
+int					ft_export(t_cmd *cmd, t_shell *shell);
+int					ft_unset(t_cmd *cmd, t_shell *shell);
+int					ft_env(t_shell *shell);
+
+// MALLOC
+char				**ft_matdup(char **mat);
+char				*ft_limit_buffer(char *line);
+char				*ft_espur_str(char *line);
+char				*ft_strndup(const char *s, size_t n);
+char				**ft_parser_split(char *line, char *delim);
+
+// ENV
+t_env				*ft_get_envp_list(char **envp);
+char				**ft_getenv(t_shell *shell);
 
 // FREE
 void				free_cmd(t_cmd **cmd);
