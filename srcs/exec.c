@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 10:51:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 12:17:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	ft_exec_on_child(t_shell *shell)
 			ft_free_all(shell);
 			exit(1);
 		}
-		ft_execve(shell->cmd->cmd, shell->cmd->args, shell->envp, shell);
+		ft_execve(bin_route, shell->cmd->args + 1, shell->envp, shell);
 	}
 	if (bin_route != NULL)
 		free(bin_route);
@@ -118,7 +118,7 @@ void	exec_cmd(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd != NULL)
 	{
-		if (ft_exec_on_parent(cmd, shell) == 1)
+		if (ft_exec_on_parent(cmd, shell) == 1 && cmd->type == EXEC)
 		{
 			cmd = cmd->next;
 			continue ;
