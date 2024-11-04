@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/05/20 13:17:34 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:09:49 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
+	if (s == NULL)
+		return (0);
 	while (s[i] != '\0')
 		i++;
 	return (i);

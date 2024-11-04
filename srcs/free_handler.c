@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/31 12:58:08 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 11:00:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,29 @@ void ft_free_all(t_shell *shell)
 {
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);
+	if (shell->envp != NULL)
+		ft_free_args(shell->envp);
+	if (shell->envp_list != NULL)
+		ft_free_envp_list(shell->envp_list);
 	if (shell->line != NULL)
 		free(shell->line);
+}
+
+void	ft_free_envp_list(t_env *env)
+{
+	t_env	*tmp;
+
+	while (env != NULL)
+	{
+		tmp = env->next;
+		if (env->key != NULL)
+			free(env->key);
+		if (env->value != NULL)
+			free(env->value);
+		if (env != NULL)
+			free(env);
+		env = tmp;
+	}
 }
 
 void	ft_free_args(char **args)
@@ -28,7 +49,8 @@ void	ft_free_args(char **args)
 	i = 0;
 	while (args[i] != NULL)
 		free(args[i++]);
-	free(args);
+	if (args != NULL)
+		free(args);
 }
 
 void	free_cmd(t_cmd **cmd)

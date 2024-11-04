@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/01 09:45:55 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:13:50 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,5 +177,54 @@ int	ft_env(t_shell *shell)
 		printf("%s=%s\n", tmp->key, tmp->value);
 		tmp = tmp->next;
 	}
+	return (1);
+}
+
+char	*ft_getenv(char *key, t_shell *shell)
+{
+	t_env	*tmp;
+
+	tmp = shell->envp_list;
+	while (tmp != NULL)
+	{
+		if (ft_strncmp(tmp->key, key, ft_strlen(key)) == 0)
+			return (tmp->value);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+int	ft_echo(t_cmd *cmd, t_shell *shell)
+{
+	char *str;
+	int flag;
+	int i;
+
+	i = 1;
+	flag = 0;
+	while (cmd->args[i] != NULL)
+	{
+		if (i == 1 && ft_strncmp(cmd->args[i], "-n", 3) == 0)
+		{
+			i++;
+			flag = 1;
+			continue ;
+		}
+		if (cmd->args[i][0] == '$')
+		{
+			str = ft_getenv(&cmd->args[i][1], shell);
+			if (str != NULL)
+				printf("%s", str);
+			else
+				continue ;
+		}
+		else
+			printf("%s", cmd->args[i]);
+		if (cmd->args[i + 1] != NULL)
+			printf(" ");
+		i++;
+	}
+	if (flag == 0)
+		printf("\n");
 	return (1);
 }

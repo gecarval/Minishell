@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/01 09:36:49 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:58:30 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,13 +136,13 @@ void	add_cmd(t_shell *shell, char **args, int is_pipe)
 	t_cmd	*last;
 
 	new = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new)
+	if (new == NULL)
 		return ;
 	new->next = NULL;
 	new->cmd = ft_strdup(args[0]);
-	add_args_and_output(new, args);
 	ft_handle_ispipe(new, is_pipe);
-	if (!shell->cmd)
+	add_args_and_output(new, args);
+	if (shell->cmd == NULL)
 		shell->cmd = new;
 	else
 	{
@@ -170,7 +170,7 @@ void	parse_line(t_shell *shell)
 	cmds = ft_split(shell->line, '|');
 	while (cmds[i])
 	{
-		args = ft_parser_split(shell->line, " ");
+		args = ft_parser_split(cmds[i], " ");
 		add_cmd(shell, args, ft_is_pipe(shell->line));
 		ft_free_args(args);
 		free(cmds[i]);

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/01 09:44:08 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:51:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	ft_exec_on_child(t_shell *shell)
 	bin_route = NULL;
 	if (shell->cmd->cmd[0] != '/' && ft_strncmp(shell->cmd->cmd, "./", 2) != 0)
 		bin_route = ft_strjoin("/bin/", shell->cmd->cmd);
-	if (bin_route == NULL)
+	if (shell->cmd->cmd[0] != '/' && bin_route == NULL)
 		bin_route = ft_strdup(shell->cmd->cmd);
 	printf("bin_route: %s\n", bin_route);
 	if (shell->cmd->type == EXEC)
@@ -99,6 +99,8 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 		workdone = ft_unset(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
 		workdone = ft_env(shell);
+	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
+		workdone = ft_echo(cmd, shell);
 	return (workdone);
 }
 
@@ -130,7 +132,8 @@ void	exec_cmd(t_shell *shell)
 		}
 		else
 		{
-			waitpid(pid, &status, 0);
+			//if (cmd->next == NULL && cmd->next->type == PIPE)
+				waitpid(pid, &status, 0);
 			cmd = cmd->next;
 		}
 	}

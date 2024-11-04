@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/01 08:15:02 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:21:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,31 @@ char *ft_strndup(const char *s, size_t n)
 	return (new);
 }
 
+void	ft_sort_env(t_env *env)
+{
+	t_env	*tmp;
+	char	*key;
+	char	*value;
+
+	tmp = env;
+	while (tmp != NULL)
+	{
+		if (tmp->next != NULL && ft_strncmp(tmp->key, tmp->next->key,
+				ft_strlen(tmp->key)) > 0)
+		{
+			key = tmp->key;
+			value = tmp->value;
+			tmp->key = tmp->next->key;
+			tmp->value = tmp->next->value;
+			tmp->next->key = key;
+			tmp->next->value = value;
+			tmp = env;
+		}
+		else
+			tmp = tmp->next;
+	}
+}
+
 t_env	*ft_get_envp_list(char **envp)
 {
 	t_env	*env;
@@ -92,8 +117,11 @@ int	main(int argc, char **argv, char **envp)
 	shell.envp = ft_matdup(envp);
 	shell.line = NULL;
 	shell.cmd = NULL;
+	shell.fd_in = 0;
+	shell.fd_out = 1;
 	while (1)
 	{
+		ft_sort_env(shell.envp_list);
 		shell.line = ft_limit_buffer(readline(PROMPT));
 		if (!shell.line)
 			break ;
@@ -102,10 +130,10 @@ int	main(int argc, char **argv, char **envp)
 		parse_line(&shell);
 		ft_print_cmd(shell.cmd);
 		exec_cmd(&shell);
-		if (shell.cmd != NULL)
-			free_cmd(&shell.cmd);
+		free_cmd(&shell.cmd);
 		if (shell.line != NULL)
 			free(shell.line);
 	}
+	ft_free_all(&shell);
 	return (0);
 }
