@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/01 08:59:53 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/06 10:58:40 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ char	**ft_parser_split(char *line, char *delim)
             while (new_line[++i] != '"' && new_line[i] != '\0')
                 ;
         if (new_line[i] == *delim)
-            new_line[i] = '\n';
+            new_line[i] = ';';
         i++;
     }
-    matrix = ft_split(new_line, '\n');
+    matrix = ft_split(new_line, ';');
     free(new_line);
     return (matrix);
 }

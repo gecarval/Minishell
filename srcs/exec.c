@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 12:17:02 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:21:11 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ void	ft_exec_on_child(t_shell *shell)
 	char	*bin_route;
 
 	bin_route = NULL;
+	if (shell->cmd->cmd == NULL)
+	{
+		ft_free_all(shell);
+		exit(0);
+	}
 	if (shell->cmd->cmd[0] != '/' && ft_strncmp(shell->cmd->cmd, "./", 2) != 0)
 		bin_route = ft_strjoin("/bin/", shell->cmd->cmd);
 	if (shell->cmd->cmd[0] != '/' && bin_route == NULL)
@@ -92,7 +97,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
 		workdone = ft_cd(cmd);
 	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
-		workdone = ft_pwd();
+		workdone = ft_pwd(shell);
 	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
 		workdone = ft_export(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)

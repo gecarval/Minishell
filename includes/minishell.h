@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 09:59:06 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:20:55 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct s_shell
 // BUILTINS
 int					ft_exit(t_shell *shell);
 int					ft_cd(t_cmd *cmd);
-int					ft_pwd(void);
+int					ft_pwd(t_shell *shell);
 int					ft_export(t_cmd *cmd, t_shell *shell);
 int					ft_unset(t_cmd *cmd, t_shell *shell);
 int					ft_env(t_shell *shell);
@@ -89,7 +89,7 @@ char				**ft_parser_split(char *line, char *delim);
 
 // ENV
 t_env				*ft_get_envp_list(char **envp);
-char				*ft_getenv(char *key, t_shell *shell);
+char				*ft_getenv(char *key, t_env **envp_list);
 
 // FREE
 void				free_cmd(t_cmd **cmd);

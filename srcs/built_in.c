@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 10:13:50 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:53:56 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	ft_exit(t_shell *shell)
 {
 	ft_free_all(shell);
+	ft_putendl_fd("exit", shell->fd_out);
 	exit(0);
 	return (1);
 }
@@ -22,7 +23,7 @@ int	ft_exit(t_shell *shell)
 int	ft_cd(t_cmd *cmd)
 {
 	if (cmd->argc == 1)
-		chdir(getenv("HOME"));
+		return (1);
 	else if (cmd->argc == 2)
 		chdir(cmd->args[1]);
 	else
@@ -30,12 +31,12 @@ int	ft_cd(t_cmd *cmd)
 	return (1);
 }
 
-int	ft_pwd(void)
+int	ft_pwd(t_shell *shell)
 {
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
-	printf("%s\n", cwd);
+	ft_putstr_fd(cwd, shell->fd_out);
 	free(cwd);
 	return (1);
 }
@@ -82,14 +83,32 @@ int	ft_export_on_same_key(t_cmd *cmd, t_shell *shell)
 				if (tmp->value != NULL)
 					free(tmp->value);
 				free(tmp);
-				break ;
+				return (1);
 			}
 			prev = tmp;
 			tmp = tmp->next;
 		}
 		i++;
 	}
-	return (1);
+	return (0);
+}
+
+int ft_invalid_key(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str == NULL)
+		return (1);
+	if (ft_isdigit(str[0]) == 1)
+		return (1);
+	while (str[i] != '=' && str[i] != '\0')
+	{
+		if (ft_isalnum(str[i]) == 0 || str[i] == '_')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int	ft_export(t_cmd *cmd, t_shell *shell)
@@ -100,9 +119,15 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 	t_env	*tmp;
 
 	i = 1;
-	ft_export_on_same_key(cmd, shell);
+	if (ft_export_on_same_key(cmd, shell) == 1)
+		return (1);
 	while (cmd->args[i] != NULL)
 	{
+		if (ft_invalid_key(cmd->args[i]) == 1)
+		{
+			i++;
+			continue ;
+		}
 		j = 0;
 		while (cmd->args[i][j] != '=' && cmd->args[i][j] != '\0')
 			j++;
@@ -174,20 +199,26 @@ int	ft_env(t_shell *shell)
 	tmp = shell->envp_list;
 	while (tmp != NULL)
 	{
-		printf("%s=%s\n", tmp->key, tmp->value);
+		if (tmp->value != NULL)
+		{
+			ft_putstr_fd(tmp->key, shell->fd_out);
+			ft_putstr_fd("=", shell->fd_out);
+			ft_putstr_fd(tmp->value, shell->fd_out);
+			ft_putstr_fd("\n", shell->fd_out);
+		}
 		tmp = tmp->next;
 	}
 	return (1);
 }
 
-char	*ft_getenv(char *key, t_shell *shell)
+char	*ft_getenv(char *key, t_env **envp_list)
 {
 	t_env	*tmp;
 
-	tmp = shell->envp_list;
+	tmp = *envp_list;
 	while (tmp != NULL)
 	{
-		if (ft_strncmp(tmp->key, key, ft_strlen(key)) == 0)
+		if (ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) == 0)
 			return (tmp->value);
 		tmp = tmp->next;
 	}
@@ -212,19 +243,18 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 		}
 		if (cmd->args[i][0] == '$')
 		{
-			str = ft_getenv(&cmd->args[i][1], shell);
-			if (str != NULL)
-				printf("%s", str);
-			else
-				continue ;
+			str = ft_getenv(&cmd->args[i][1], &shell->envp_list);
+			if (str == NULL)
+				ft_putstr_fd("\n", shell->fd_out);
+			ft_putstr_fd(str, shell->fd_out);
 		}
 		else
-			printf("%s", cmd->args[i]);
+			ft_putstr_fd(cmd->args[i], shell->fd_out);
 		if (cmd->args[i + 1] != NULL)
-			printf(" ");
+			ft_putstr_fd(" ", shell->fd_out);
 		i++;
 	}
 	if (flag == 0)
-		printf("\n");
+		ft_putstr_fd("\n", shell->fd_out);
 	return (1);
 }
