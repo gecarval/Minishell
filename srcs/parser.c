@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 10:58:30 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 09:04:17 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,8 @@ void	parse_line(t_shell *shell)
 	i = 0;
 	if (!shell->line)
 		return ;
-	ft_check_quotes(shell->line);
+	if (ft_check_unvalid(shell->line) == 1)
+		return ;
 	cmds = ft_split(shell->line, '|');
 	while (cmds[i])
 	{

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/06 12:21:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 08:57:20 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,8 @@ void	exec_cmd(t_shell *shell)
 		}
 		else
 		{
-			//if (cmd->next == NULL && cmd->next->type == PIPE)
-				waitpid(pid, &status, 0);
+			// if (cmd->next == NULL && cmd->next->type == PIPE)
+			waitpid(pid, &status, 0);
 			cmd = cmd->next;
 		}
 	}

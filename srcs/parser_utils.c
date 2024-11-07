@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/23 09:11:24 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 09:03:53 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,20 @@
 // Because some shells have a limit of characters in a command
 char	*ft_limit_buffer(char *line)
 {
-    int		i;
+	int	i;
 
-    i = 0;
+	i = 0;
 	if (!line)
 		return (NULL);
-    while (line[i] != '\0' && i < CMD_BUFFER)
-        i++;
-    if (i >= CMD_BUFFER)
-    {
-        free(line);
-        printf("minishell: command too long\n");
-        return (NULL);
-    }
-    return (line);
+	while (line[i] != '\0' && i < CMD_BUFFER)
+		i++;
+	if (i >= CMD_BUFFER)
+	{
+		free(line);
+		printf("minishell: command too long\n");
+		return (NULL);
+	}
+	return (line);
 }
 
 // This function removes the extra spaces from the line
@@ -79,7 +79,7 @@ int	ft_is_pipe(char *line)
 }
 
 // This function checks if the line has unclosed quotes
-void	ft_check_quotes(char *line)
+int	ft_check_unvalid(char *line)
 {
 	int	i;
 	int	quotes;
@@ -88,13 +88,19 @@ void	ft_check_quotes(char *line)
 	quotes = 0;
 	while (line[i])
 	{
+		if (line[i] == ';' || line[i] == '\\')
+		{
+			printf("minishell: syntax error (unexpected symbol)\n");
+			return (1);
+		}
 		if (line[i] == '\"' || line[i] == '\'')
 			quotes++;
 		i++;
 	}
 	if (quotes % 2 != 0)
 	{
-		printf("minishell: syntax error\n");
-		exit(1);
+		printf("minishell: syntax error (unclosed quotes)\n");
+		return (1);
 	}
+	return (0);
 }
