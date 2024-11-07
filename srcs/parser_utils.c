@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 09:03:53 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:39:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,40 +27,29 @@ char	*ft_limit_buffer(char *line)
 		i++;
 	if (i >= CMD_BUFFER)
 	{
-		free(line);
-		printf("minishell: command too long\n");
-		return (NULL);
+		printf("minishell: Argument list too long\n");
+		return (line);
 	}
 	return (line);
 }
 
-// This function removes the extra spaces from the line
-char	*ft_espur_str(char *line)
+// This function removes the quotes from the string
+// It returns the string without quotes
+char	*ft_remove_quotes(char *str, int len)
 {
-	int		i;
-	int		j;
-	char	*new;
+	int	i;
+	int	j;
 
-	if (!line)
-		return (NULL);
-	new = malloc(sizeof(char) * (ft_strlen(line) + 1));
-	if (!new)
-		return (NULL);
 	i = 0;
 	j = 0;
-	while (line[i] == ' ')
-		i++;
-	while (line[i] != '\0')
+	while (str[i] != '\0' && i < len)
 	{
-		if (line[i] == ' ' && line[i + 1] == ' ')
-			while (line[i + 1] == ' ')
-				i++;
-		new[j] = line[i];
+		if (str[i] != '"')
+			str[j++] = str[i];
 		i++;
-		j++;
 	}
-	new[j] = '\0';
-	return (new);
+	str[j] = '\0';
+	return (str);
 }
 
 // This function checks if the line has a pipe
@@ -82,10 +71,12 @@ int	ft_is_pipe(char *line)
 int	ft_check_unvalid(char *line)
 {
 	int	i;
-	int	quotes;
+	int	dquotes;
+	int	squotes;
 
 	i = 0;
-	quotes = 0;
+	dquotes = 0;
+	squotes = 0;
 	while (line[i])
 	{
 		if (line[i] == ';' || line[i] == '\\')
@@ -93,11 +84,13 @@ int	ft_check_unvalid(char *line)
 			printf("minishell: syntax error (unexpected symbol)\n");
 			return (1);
 		}
-		if (line[i] == '\"' || line[i] == '\'')
-			quotes++;
+		if (line[i] == '\"' && squotes % 2 == 0) 
+			dquotes++;
+		if (line[i] == '\'' && dquotes % 2 == 0)
+			squotes++;
 		i++;
 	}
-	if (quotes % 2 != 0)
+	if (dquotes % 2 != 0 || squotes % 2 != 0)
 	{
 		printf("minishell: syntax error (unclosed quotes)\n");
 		return (1);

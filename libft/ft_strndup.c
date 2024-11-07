@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 14:56:27 by gecarval         ###   ########.fr       */
+/*   Created: 2024/11/07 14:54:04 by gecarval          #+#    #+#             */
+/*   Updated: 2024/11/07 14:55:58 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+char	*ft_strndup(const char *s, size_t n)
 {
+	char	*new;
 	size_t	i;
 
 	i = 0;
-	if (s1 == NULL && s2 == NULL)
-		return (0);
-	if (s1 == NULL && s2 != NULL)
-		return ((unsigned char)s2[0]);
-	if (s2 == NULL && s1 != NULL)
-		return ((unsigned char)s1[0]);
-	while ((s1[i] != '\0' || s2[i] != '\0') && i < n)
+	if (s == NULL)
+		return (NULL);
+	new = (char *)malloc(sizeof(char) * (n + 1));
+	if (new == NULL)
+		return (NULL);
+	while (i < n && s[i] != '\0')
 	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		new[i] = s[i];
 		i++;
 	}
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	new[i] = '\0';
+	return (new);
 }

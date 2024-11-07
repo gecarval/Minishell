@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 08:57:20 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:10:57 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,26 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 	}
 }
 
-void	ft_exec_on_child(t_shell *shell)
+void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 {
 	char	*bin_route;
 
 	bin_route = NULL;
-	if (shell->cmd->cmd == NULL)
+	if (cmd->cmd == NULL)
 	{
 		ft_free_all(shell);
 		exit(0);
 	}
-	if (shell->cmd->cmd[0] != '/' && ft_strncmp(shell->cmd->cmd, "./", 2) != 0)
-		bin_route = ft_strjoin("/bin/", shell->cmd->cmd);
-	if (shell->cmd->cmd[0] != '/' && bin_route == NULL)
-		bin_route = ft_strdup(shell->cmd->cmd);
+	if (cmd->cmd[0] != '/' && ft_strncmp(cmd->cmd, "./", 2) != 0)
+		bin_route = ft_strjoin("/bin/", cmd->cmd);
+	if (cmd->cmd[0] != '/' && bin_route == NULL)
+		bin_route = ft_strdup(cmd->cmd);
 	printf("bin_route: %s\n", bin_route);
-	if (shell->cmd->type == EXEC)
+	if (cmd->type == EXEC)
 	{
-		ft_execve(bin_route, shell->cmd->args, shell->envp, shell);
+		ft_execve(bin_route, cmd->args, shell->envp, shell);
 	}
-	else if (shell->cmd->type == PIPE)
+	else if (cmd->type == PIPE)
 	{
 		if (dup2(shell->fd_in, 0) == -1)
 		{
@@ -75,7 +75,7 @@ void	ft_exec_on_child(t_shell *shell)
 			ft_free_all(shell);
 			exit(1);
 		}
-		ft_execve(bin_route, shell->cmd->args + 1, shell->envp, shell);
+		ft_execve(bin_route, cmd->args, shell->envp, shell);
 	}
 	if (bin_route != NULL)
 		free(bin_route);
@@ -109,6 +109,12 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 	return (workdone);
 }
 
+void	ft_signal_hand(int signum)
+{
+	(void)signum;
+	write(1, "\n", 1);
+}
+
 // This function executes the command
 // It forks the process
 // If the pid is 0, it executes the child process
@@ -131,15 +137,16 @@ void	exec_cmd(t_shell *shell)
 		pid = ft_fork(shell);
 		if (pid == 0)
 		{
-			ft_exec_on_child(shell);
+			ft_exec_on_child(shell, cmd);
 			ft_free_all(shell);
 			exit(0);
 		}
 		else
 		{
 			// if (cmd->next == NULL && cmd->next->type == PIPE)
+			signal(SIGINT, ft_signal_hand);
 			waitpid(pid, &status, 0);
-			cmd = cmd->next;
 		}
+		cmd = cmd->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 09:04:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:31:18 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <termios.h>
 
 # define PROMPT "minishell$ "
-# define CMD_BUFFER 1024
+# define CMD_BUFFER 131072
 # define EXEC 1
 # define REDIR 2
 # define PIPE 3
@@ -67,9 +67,14 @@ typedef struct s_shell
 	t_env			*envp_list;
 	char			*line;
 	char			**envp;
+	int				pipe_fd[2];
 	int				fd_in;
 	int				fd_out;
 }					t_shell;
+
+// MALLOC
+char				**ft_matdup(char **mat);
+char				*ft_limit_buffer(char *line);
 
 // BUILTINS
 int					ft_exit(t_shell *shell);
@@ -80,16 +85,28 @@ int					ft_unset(t_cmd *cmd, t_shell *shell);
 int					ft_env(t_shell *shell);
 int					ft_echo(t_cmd *cmd, t_shell *shell);
 
-// MALLOC
-char				**ft_matdup(char **mat);
-char				*ft_limit_buffer(char *line);
-char				*ft_espur_str(char *line);
-char				*ft_strndup(const char *s, size_t n);
-char				**ft_parser_split(char *line, char *delim);
-
 // ENV
 t_env				*ft_get_envp_list(char **envp);
+void				ft_sort_env(t_env *env);
+void				ft_export_new_key(char *arg, t_shell *shell);
+void				ft_sort_env(t_env *env);
 char				*ft_getenv(char *key, t_env **envp_list);
+int					ft_invalid_key(char *str);
+int					ft_export_on_same_key(char *arg, t_shell *shell);
+
+// PARSER_UTILS
+void				add_args_and_output(t_cmd *new, char **args);
+void				ft_handle_ispipe(t_cmd *new, int is_pipe);
+char				*ft_limit_buffer(char *line);
+char				*ft_remove_quotes(char *str, int len);
+char				**ft_parser_split(char *line, char *delim, t_shell *shell);
+int					ft_is_pipe(char *line);
+int					ft_check_unvalid(char *line);
+
+// PARSER
+void				add_args_and_output(t_cmd *new, char **args);
+void				add_cmd(t_shell *shell, char **args, int is_pipe);
+void				parse_line(t_shell *shell);
 
 // FREE
 void				free_cmd(t_cmd **cmd);
@@ -97,19 +114,10 @@ void				ft_free_args(char **args);
 void				ft_free_all(t_shell *shell);
 void				ft_free_envp_list(t_env *env);
 
-// EXEC
+// EXEC_UTILS
 pid_t				ft_fork(t_shell *shell);
-void				add_cmd(t_shell *shell, char **args, int is_pipe);
-void				exec_cmd(t_shell *shell);
 
-// PARSER_UTILS
-void				add_args_and_output(t_cmd *new, char **args);
-void				ft_handle_ispipe(t_cmd *new, int is_pipe);
-char				*ft_limit_buffer(char *line);
-char				*ft_espur_str(char *line);
-int					ft_is_pipe(char *line);
-int					ft_check_unvalid(char *line);
-// PARSER
-void				parse_line(t_shell *shell);
+// EXEC
+void				exec_cmd(t_shell *shell);
 
 #endif

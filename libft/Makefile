@@ -6,7 +6,7 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#              #
-#    Updated: 2024/10/14 14:48:25 by gecarval         ###   ########.fr        #
+#    Updated: 2024/11/07 15:03:38 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRC = 	ft_isalpha.c	\
 	ft_atoi.c 			\
 	ft_calloc.c 		\
 	ft_strdup.c 		\
+	ft_strndup.c 		\
 	ft_substr.c 		\
 	ft_strjoin.c 		\
 	ft_strtrim.c 		\

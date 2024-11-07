@@ -6,14 +6,14 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 11:00:41 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 14:57:51 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Just some free functions I think there is no need to explain
-void ft_free_all(t_shell *shell)
+void	ft_free_all(t_shell *shell)
 {
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);

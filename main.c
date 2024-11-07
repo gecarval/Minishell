@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/04 10:21:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:08:07 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,71 +32,26 @@ void	ft_print_cmd(t_cmd *cmd)
 	}
 }
 
-char *ft_strndup(const char *s, size_t n)
+void	ft_signal_handler(int signum)
 {
-	char	*new;
-	size_t	i;
-
-	i = 0;
-	if (s == NULL)
-		return (NULL);
-	new = (char *)malloc(sizeof(char) * (n + 1));
-	if (new == NULL)
-		return (NULL);
-	while (i < n && s[i] != '\0')
-	{
-		new[i] = s[i];
-		i++;
-	}
-	new[i] = '\0';
-	return (new);
+	(void)signum;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-void	ft_sort_env(t_env *env)
+// This initializes the shell data struct
+void	ft_init_shell(t_shell *shell, char **envp)
 {
-	t_env	*tmp;
-	char	*key;
-	char	*value;
-
-	tmp = env;
-	while (tmp != NULL)
-	{
-		if (tmp->next != NULL && ft_strncmp(tmp->key, tmp->next->key,
-				ft_strlen(tmp->key)) > 0)
-		{
-			key = tmp->key;
-			value = tmp->value;
-			tmp->key = tmp->next->key;
-			tmp->value = tmp->next->value;
-			tmp->next->key = key;
-			tmp->next->value = value;
-			tmp = env;
-		}
-		else
-			tmp = tmp->next;
-	}
-}
-
-t_env	*ft_get_envp_list(char **envp)
-{
-	t_env	*env;
-	t_env	*tmp;
-	int		i;
-
-	i = 0;
-	env = NULL;
-	while (envp[i] != NULL)
-	{
-		tmp = (t_env *)malloc(sizeof(t_env));
-		if (tmp == NULL)
-			return (NULL);
-		tmp->key = ft_strndup(envp[i], ft_strchr(envp[i], '=') - envp[i]);
-		tmp->value = ft_strdup(ft_strchr(envp[i], '=') + 1);
-		tmp->next = env;
-		env = tmp;
-		i++;
-	}
-	return (env);
+	shell->envp_list = ft_get_envp_list(envp);
+	shell->envp = ft_matdup(envp);
+	shell->line = NULL;
+	shell->cmd = NULL;
+	shell->pipe_fd[0] = 0;
+	shell->pipe_fd[1] = 1;
+	shell->fd_in = 0;
+	shell->fd_out = 1;
 }
 
 // This start by initializing shell data struct
@@ -113,14 +68,11 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	shell.envp_list = ft_get_envp_list(envp);
-	shell.envp = ft_matdup(envp);
-	shell.line = NULL;
-	shell.cmd = NULL;
-	shell.fd_in = 0;
-	shell.fd_out = 1;
+	signal(SIGINT, SIG_IGN);
+	ft_init_shell(&shell, envp);
 	while (1)
 	{
+		signal(SIGINT, ft_signal_handler);
 		ft_sort_env(shell.envp_list);
 		shell.line = ft_limit_buffer(readline(PROMPT));
 		if (!shell.line)
