@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/05/20 13:17:16 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/08 09:32:17 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ char	*ft_strchr(const char *s, int c)
 		s++;
 		s_len--;
 	}
-	return (NULL);
+	return ((char *)s);
 }

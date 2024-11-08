@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 16:43:56 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:43:14 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,59 +31,96 @@ char	**ft_matdup(char **mat)
 	return (new);
 }
 
-void	ft_insert_str_in_str(char **str, char *insert, int index)
+char	*ft_insert_str_in_str(char *str, char *insert, int insert_len,
+		int index)
 {
 	char	*new_str;
 	int		i;
 	int		j;
+	int		k;
 
-	new_str = (char *)malloc(sizeof(char) * (ft_strlen(*str) + ft_strlen(insert)
+	new_str = (char *)malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(insert)
 				+ 1));
 	i = 0;
 	j = 0;
-	while ((*str)[i] != '\0')
+	k = 0;
+	while (str[k] != '\0')
 	{
 		if (i == index)
 		{
-			while (insert[j] != '\0')
+			while (insert != NULL && insert[j] != '\0' && insert[0] != ' ')
 				new_str[i++] = insert[j++];
+			if (insert != NULL && insert[0] != ' ')
+				k += insert_len;
 		}
-		new_str[i] = (*str)[i];
-		i++;
+		new_str[i++] = str[k++];
 	}
 	new_str[i] = '\0';
-	free(*str);
-	*str = new_str;
+	free(str);
+	return (new_str);
+}
+
+char	*ft_strchr_validenv(const char *s)
+{
+	int	s_len;
+
+	if (s == NULL)
+		return ((char *)s);
+	if (ft_isalpha((s[0]) == 0 && s[0] != '_') || s[0] == '\"')
+		return ((char *)s);
+	s_len = ft_strlen(s);
+	while (s_len >= 0 && *s != '=')
+	{
+		if (*s == '\"' || *s == '\'' || (ft_isalnum(*s) == 0 && *s != '_'))
+			return ((char *)s);
+		s++;
+		s_len--;
+	}
+	return ((char *)s);
+}
+
+void	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
+{
+	static int	expand_flag[2] = {1, 0};
+	char		*tmp;
+	char		*tmp2;
+
+	if (matrix[i][j] == '\"' && expand_flag[1] == 0)
+		expand_flag[1] = 1;
+	else if (matrix[i][j] == '\"' && expand_flag[1] == 1)
+		expand_flag[1] = 0;
+	if (matrix[i][j] == '\'' && expand_flag[0] == 1 && expand_flag[1] == 0)
+		expand_flag[0] = 0;
+	else if (matrix[i][j] == '\'' && expand_flag[0] == 0 && expand_flag[1] == 0)
+		expand_flag[0] = 1;
+	if (matrix[i][j] == '$' && expand_flag[0] == 1)
+	{
+		tmp = ft_strndup(&matrix[i][j + 1], ft_strchr_validenv(&matrix[i][j
+					+ 1]) - &matrix[i][j + 1]);
+		tmp2 = ft_strdup(ft_getenv(tmp, &shell->envp_list));
+		if (tmp2 != NULL)
+			matrix[i] = ft_insert_str_in_str(matrix[i], tmp2, ft_strlen(tmp)
+					+ 1, j);
+		else
+			matrix[i] = ft_insert_str_in_str(matrix[i], " ", ft_strlen(tmp) + 1,
+					j);
+		free(tmp);
+		free(tmp2);
+	}
 }
 
 void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
 {
-	int		i;
-	int		j;
-	int		expand_flag;
-	char	*tmp;
-    char    *tmp2;
+	int	i;
+	int	j;
 
 	i = 0;
-	expand_flag = 1;
 	while (matrix[i] != NULL)
 	{
 		j = 0;
 		while (matrix[i][j] != '\0')
 		{
-			if (matrix[i][j] == '\'' && expand_flag == 1)
-				expand_flag = 0;
-			else if (matrix[i][j] == '\'' && expand_flag == 0)
-				expand_flag = 1;
-			if (matrix[i][j] == '$' && expand_flag == 1)
-			{
-				tmp = ft_strndup(&matrix[i][j + 1], ft_strchr(&matrix[i][j + 1],
-							' ') - &matrix[i][j + 1]);
-                tmp2 = ft_strdup(ft_getenv(tmp, &shell->envp_list));
-                free(tmp);
-				ft_insert_str_in_str(&matrix[i], tmp2, j);
-                free(tmp2);
-			}
+			ft_deal_with_quotes(matrix, i, j, shell);
 			j++;
 		}
 		i++;
@@ -114,6 +151,9 @@ char	**ft_parser_split(char *line, char *delim, t_shell *shell)
 	{
 		if (new_line[i] == '"')
 			while (new_line[++i] != '"' && new_line[i] != '\0')
+				;
+		if (new_line[i] == '\'')
+			while (new_line[++i] != '\'' && new_line[i] != '\0')
 				;
 		if (new_line[i] == *delim)
 			new_line[i] = ';';
