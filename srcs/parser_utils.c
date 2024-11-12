@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 16:39:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 08:33:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*ft_remove_quotes(char *str, int len)
 	j = 0;
 	while (str[i] != '\0' && i < len)
 	{
-		if (str[i] != '"')
+		if (str[i] != '"' || str[i] != '\'')
 			str[j++] = str[i];
 		i++;
 	}
