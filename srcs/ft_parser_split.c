@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 09:01:55 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 11:30:12 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,18 +114,16 @@ char	*ft_putstr_instr(char *str, char *insert, int insert_len, int index)
 
 void	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
 {
-	static int	insert_flag = 0;
+	static int	outside_quotes = 0;
 	static int	block_flag = 0;
 	char		*tmp;
 	char		*tmp2;
 
-	if (matrix[i][j] == '\"' && insert_flag == 0)
-		insert_flag = 1;
-	else if (matrix[i][j] == '\"' && insert_flag == 1)
-		insert_flag = 0;
-	if (matrix[i][j] == '\'' && block_flag == 1 && insert_flag == 0)
+	if (matrix[i][j] == '\"')
+		outside_quotes += 1;
+	if (matrix[i][j] == '\'' && block_flag == 1 && outside_quotes % 2 == 0)
 		block_flag = 0;
-	else if (matrix[i][j] == '\'' && block_flag == 0 && insert_flag == 0)
+	else if (matrix[i][j] == '\'' && block_flag == 0 && outside_quotes % 2 == 0)
 		block_flag = 1;
 	if (matrix[i][j] == '$' && block_flag == 0)
 	{

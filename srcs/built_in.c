@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 15:16:04 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 11:30:47 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ int	ft_pwd(t_shell *shell)
 
 int	ft_echo(t_cmd *cmd, t_shell *shell)
 {
-	char	*str;
 	int		flag;
 	int		i;
 
@@ -56,13 +55,6 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 			i++;
 			flag = 1;
 			continue ;
-		}
-		if (cmd->args[i][0] == '$')
-		{
-			str = ft_getenv(&cmd->args[i][1], &shell->envp_list);
-			if (str == NULL)
-				ft_putstr_fd("\n", shell->fd_out);
-			ft_putstr_fd(str, shell->fd_out);
 		}
 		else
 			ft_putstr_fd(cmd->args[i], shell->fd_out);
