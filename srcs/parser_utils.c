@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 08:33:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:05:59 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	ft_check_unvalid(char *line)
 			printf("minishell: syntax error (unexpected symbol)\n");
 			return (1);
 		}
-		if (line[i] == '\"' && squotes % 2 == 0) 
+		if (line[i] == '\"' && squotes % 2 == 0)
 			dquotes++;
 		if (line[i] == '\'' && dquotes % 2 == 0)
 			squotes++;

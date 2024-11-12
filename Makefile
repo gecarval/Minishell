@@ -6,7 +6,7 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/14 14:50:48 by gecarval          #+#    #+#              #
-#    Updated: 2024/11/07 15:10:18 by gecarval         ###   ########.fr        #
+#    Updated: 2024/11/12 11:54:27 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRCS =	main.c						\
 		./srcs/ft_parser_split.c	\
 		./srcs/env_handle.c			\
 		./srcs/env_utils.c			\
+		./srcs/expand_sign.c		\
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
