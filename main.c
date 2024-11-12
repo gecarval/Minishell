@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 16:08:07 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:53:53 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,29 @@ void	ft_signal_handler(int signum)
 	rl_redisplay();
 }
 
+t_env	*ft_get_envp_list(char **envp)
+{
+	t_env	*env;
+	t_env	*tmp;
+	int		i;
+
+	i = 0;
+	env = NULL;
+	while (envp[i] != NULL)
+	{
+		tmp = (t_env *)malloc(sizeof(t_env));
+		if (tmp == NULL)
+			return (NULL);
+		tmp->key = ft_strndup(envp[i], ft_strchr(envp[i], '=') - envp[i]);
+		tmp->equal = 1;
+		tmp->value = ft_strdup(ft_strchr(envp[i], '=') + 1);
+		tmp->next = env;
+		env = tmp;
+		i++;
+	}
+	return (env);
+}
+
 // This initializes the shell data struct
 void	ft_init_shell(t_shell *shell, char **envp)
 {
@@ -73,7 +96,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		signal(SIGINT, ft_signal_handler);
-		ft_sort_env(shell.envp_list);
 		shell.line = ft_limit_buffer(readline(PROMPT));
 		if (!shell.line)
 			break ;

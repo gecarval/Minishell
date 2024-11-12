@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:40:05 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 15:00:56 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:51:17 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ int	ft_invalid_key(char *str)
 			return (1);
 		i++;
 	}
-	if (str[i] == '\0')
-		return (1);
 	return (0);
 }
 
@@ -79,12 +77,15 @@ int	ft_export_on_same_key(char *arg, t_shell *shell)
 	i = 0;
 	while (arg[i] != '=' && arg[i] != '\0')
 		i++;
+	if (arg[i] == '\0')
+		return (1);
 	tmp = shell->envp_list;
 	while (tmp != NULL)
 	{
 		if (ft_strncmp(tmp->key, ft_remove_quotes(arg, i), i - 1) == 0)
 		{
-			free(tmp->value);
+			if (tmp->value != NULL)
+				free(tmp->value);
 			tmp->value = ft_strdup(ft_remove_quotes(&arg[i + 1],
 						ft_strlen(&arg[i + 1])));
 			return (1);
@@ -106,9 +107,11 @@ void	ft_export_new_key(char *arg, t_shell *shell)
 	new = (t_env *)malloc(sizeof(t_env));
 	if (new == NULL)
 		return ;
-	new->key = ft_strndup(ft_remove_quotes(arg, i), i);
-	new->value = ft_strdup(ft_remove_quotes(&arg[i + 1], ft_strlen(&arg[i
-					+ 1])));
+	new->key = ft_strndup(arg, i);
+	new->equal = 1;
+	if (arg[i] == '\0')
+		new->equal = 0;
+	new->value = ft_strdup(arg + i + 1);
 	new->next = NULL;
 	if (shell->envp_list == NULL)
 		shell->envp_list = new;

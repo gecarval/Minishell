@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 11:54:53 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:34:25 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_cmd
 typedef struct s_env
 {
 	char			*key;
+	int				equal;
 	char			*value;
 	struct s_env	*next;
 }					t_env;
@@ -78,7 +79,7 @@ char				*ft_limit_buffer(char *line);
 
 // BUILTINS
 int					ft_exit(t_shell *shell);
-int					ft_cd(t_cmd *cmd);
+int					ft_cd(t_cmd *cmd, t_shell *shell);
 int					ft_pwd(t_shell *shell);
 int					ft_export(t_cmd *cmd, t_shell *shell);
 int					ft_unset(t_cmd *cmd, t_shell *shell);

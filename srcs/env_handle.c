@@ -6,50 +6,68 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 15:02:49 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 13:03:12 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_env	*ft_get_envp_list(char **envp)
+void ft_add_env(t_env **env, t_env *src)
 {
-	t_env	*env;
+	t_env	*new;
 	t_env	*tmp;
-	int		i;
 
-	i = 0;
-	env = NULL;
-	while (envp[i] != NULL)
+	new = (t_env *)malloc(sizeof(t_env));
+	if (new == NULL)
+		return ;
+	new->key = ft_strdup(src->key);
+	new->equal = src->equal;
+	new->value = ft_strdup(src->value);
+	new->next = NULL;
+	if (*env == NULL)
+		*env = new;
+	else
 	{
-		tmp = (t_env *)malloc(sizeof(t_env));
-		if (tmp == NULL)
-			return (NULL);
-		tmp->key = ft_strndup(envp[i], ft_strchr(envp[i], '=') - envp[i]);
-		tmp->value = ft_strdup(ft_strchr(envp[i], '=') + 1);
-		tmp->next = env;
-		env = tmp;
-		i++;
+		tmp = *env;
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = new;
 	}
-	return (env);
 }
 
-int	ft_env(t_shell *shell)
+t_env	*ft_dupenv(t_env *env)
 {
+	t_env	*new;
 	t_env	*tmp;
 
-	tmp = shell->envp_list;
+	new = NULL;
+	tmp = env;
 	while (tmp != NULL)
 	{
-		if (tmp->value != NULL)
-		{
-			ft_putstr_fd(tmp->key, shell->fd_out);
-			ft_putstr_fd("=", shell->fd_out);
-			ft_putstr_fd(tmp->value, shell->fd_out);
-			ft_putstr_fd("\n", shell->fd_out);
-		}
+		ft_add_env(&new, tmp);
 		tmp = tmp->next;
 	}
+	return (new);
+}
+
+int	ft_export_print(t_shell *shell)
+{
+	t_env	*tmp;
+	t_env	*new;
+
+	new = ft_dupenv(shell->envp_list);
+	ft_sort_env(new);
+	tmp = new;
+	while (tmp != NULL)
+	{
+		ft_putstr_fd("declare -x ", shell->fd_out);
+		ft_putstr_fd(tmp->key, shell->fd_out);
+		ft_putstr_fd("=\"", shell->fd_out);
+		ft_putstr_fd(tmp->value, shell->fd_out);
+		ft_putstr_fd("\"\n", shell->fd_out);
+		tmp = tmp->next;
+	}
+	ft_free_envp_list(new);
 	return (1);
 }
 
@@ -59,7 +77,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 
 	i = 0;
 	if (cmd->argc == 1)
-		ft_env(shell);
+		return (ft_export_print(shell));
 	while (cmd->args[++i] != NULL)
 	{
 		if (ft_invalid_key(cmd->args[i]) == 1)

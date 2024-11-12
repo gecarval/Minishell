@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 16:10:57 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:34:39 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
 		workdone = ft_exit(shell);
 	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
-		workdone = ft_cd(cmd);
+		workdone = ft_cd(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
 		workdone = ft_pwd(shell);
 	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
