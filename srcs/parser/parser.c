@@ -6,11 +6,11 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 11:59:53 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:33:23 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 // This function adds the arguments
 // and the output to the command structure
@@ -44,7 +44,7 @@ void	add_cmd(t_shell *shell, char **args, int is_pipe)
 	if (new == NULL)
 		return ;
 	new->next = NULL;
-	new->cmd = ft_strdup(args[0]), ft_strlen(args[0]);
+	new->cmd = ft_strdup(args[0]);
 	if (is_pipe == 1)
 		new->type = PIPE;
 	else

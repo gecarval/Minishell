@@ -6,11 +6,11 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:05:59 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:32:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 // This function limits the buffer size of the line
 // It returns NULL if the line is NULL
@@ -80,10 +80,9 @@ int	ft_check_unvalid(char *line)
 	while (line[i])
 	{
 		if (line[i] == ';' || line[i] == '\\')
-		{
 			printf("minishell: syntax error (unexpected symbol)\n");
+		if (line[i] == ';' || line[i] == '\\')
 			return (1);
-		}
 		if (line[i] == '\"' && squotes % 2 == 0)
 			dquotes++;
 		if (line[i] == '\'' && dquotes % 2 == 0)
@@ -91,9 +90,8 @@ int	ft_check_unvalid(char *line)
 		i++;
 	}
 	if (dquotes % 2 != 0 || squotes % 2 != 0)
-	{
 		printf("minishell: syntax error (unclosed quotes)\n");
+	if (dquotes % 2 != 0 || squotes % 2 != 0)
 		return (1);
-	}
 	return (0);
 }

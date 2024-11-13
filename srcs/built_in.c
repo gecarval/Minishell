@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 13:02:46 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:33:22 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,14 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 		tmp = tmp->next;
 	}
 	cwd = getcwd(NULL, 0);
-	if (oldpwd->value != NULL)
+	if (oldpwd != NULL && oldpwd->value != NULL)
 		free(oldpwd->value);
-	oldpwd->value = ft_strdup(pwd->value);
-	if (pwd->value != NULL)
+	if (oldpwd != NULL && pwd != NULL)
+		oldpwd->value = ft_strdup(pwd->value);
+	if (pwd != NULL && pwd->value != NULL)
 		free(pwd->value);
-	pwd->value = ft_strdup(cwd);
+	if (pwd != NULL)
+		pwd->value = ft_strdup(cwd);
 	free(cwd);
 }
 
@@ -68,25 +70,6 @@ int	ft_pwd(t_shell *shell)
 	ft_putstr_fd(cwd, shell->fd_out);
 	ft_putstr_fd("\n", shell->fd_out);
 	free(cwd);
-	return (1);
-}
-
-int	ft_env(t_shell *shell)
-{
-	t_env	*tmp;
-
-	tmp = shell->envp_list;
-	while (tmp != NULL)
-	{
-		if (tmp->equal == 1)
-		{
-			ft_putstr_fd(tmp->key, shell->fd_out);
-			ft_putstr_fd("=", shell->fd_out);
-			ft_putstr_fd(tmp->value, shell->fd_out);
-			ft_putstr_fd("\n", shell->fd_out);
-		}
-		tmp = tmp->next;
-	}
 	return (1);
 }
 

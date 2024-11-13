@@ -6,11 +6,11 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:03:40 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:42:05 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 // ft_strdup but for matrix
 char	**ft_matdup(char **mat)
@@ -23,7 +23,7 @@ char	**ft_matdup(char **mat)
 		return (NULL);
 	while (mat[i] != NULL)
 		i++;
-	new = (char **)malloc(sizeof(char *) * (i + 1));
+	new = (char **)ft_calloc((i + 1), sizeof(char *));
 	i = -1;
 	while (mat[++i] != NULL)
 		new[i] = ft_strdup(mat[i]);
@@ -42,15 +42,19 @@ void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
 	int	i;
 	int	j;
 
-	i = -1;
+	i = 0;
 	if (matrix == NULL)
 		return ;
-	while (matrix[++i] != NULL)
+	while (matrix[i] != NULL)
 	{
-		j = -1;
-		while (matrix[i][++j] != '\0')
+		j = 0;
+		while (matrix[i][j] != '\0')
+		{
 			ft_deal_with_quotes(matrix, i, j, shell);
+			j++;
+		}
 		ft_remove_quotes_logic(matrix[i], ft_strlen(matrix[i]));
+		i++;
 	}
 }
 
@@ -72,7 +76,7 @@ char	**ft_parser_split(char *line, char *delim, t_shell *shell)
 		return (NULL);
 	i = -1;
 	new_line = ft_strdup(line);
-	if (!new_line)
+	if (new_line == NULL)
 		return (NULL);
 	while (new_line[++i] != '\0')
 	{

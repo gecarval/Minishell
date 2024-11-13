@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:34:39 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 09:39:11 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,59 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 	}
 }
 
+void	ft_dup2(int fd, int fd2, t_shell *shell, char *bin_route)
+{
+	if (dup2(fd, fd2) == -1)
+	{
+		printf("minishell: dup2 failed\n");
+		if (bin_route != NULL)
+			free(bin_route);
+		ft_free_all(shell);
+		exit(1);
+	}
+}
+
+char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
+{
+	char	*tmp;
+	char	**path;
+	int		i;
+
+	i = -1;
+	tmp = ft_getenv("PATH", &shell->envp_list);
+	if (tmp == NULL || cmd->cmd == NULL)
+	{
+		printf("minishell: %s: command not found\n", cmd->cmd);
+		ft_free_all(shell);
+		exit(1);
+	}
+	path = ft_split(tmp, ':');
+	free(tmp);
+	while (path[++i] != NULL)
+	{
+		tmp = ft_strjoin(path[i], "/");
+		bin_route = ft_strjoin(tmp, cmd->cmd);
+		free(tmp);
+		if (access(bin_route, F_OK) == 0)
+		{
+			ft_free_args(path);
+			return (bin_route);
+		}
+		free(bin_route);
+	}
+	ft_free_args(path);
+	return (NULL);
+}
+
 void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 {
 	char	*bin_route;
 
 	bin_route = NULL;
-	if (cmd->cmd == NULL)
-	{
-		ft_free_all(shell);
-		exit(0);
-	}
-	if (cmd->cmd[0] != '/' && ft_strncmp(cmd->cmd, "./", 2) != 0)
-		bin_route = ft_strjoin("/bin/", cmd->cmd);
-	if (cmd->cmd[0] != '/' && bin_route == NULL)
+	if (access(cmd->cmd, F_OK) == 0)
 		bin_route = ft_strdup(cmd->cmd);
+	else
+		bin_route = ft_get_bin_based_on_path(bin_route, shell, cmd);
 	printf("bin_route: %s\n", bin_route);
 	if (cmd->type == EXEC)
 	{
@@ -61,20 +100,8 @@ void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 	}
 	else if (cmd->type == PIPE)
 	{
-		if (dup2(shell->fd_in, 0) == -1)
-		{
-			printf("minishell: dup2 failed\n");
-			free(bin_route);
-			ft_free_all(shell);
-			exit(1);
-		}
-		if (dup2(shell->fd_out, 1) == -1)
-		{
-			printf("minishell: dup2 failed\n");
-			free(bin_route);
-			ft_free_all(shell);
-			exit(1);
-		}
+		ft_dup2(shell->pipe_fd[1], 1, shell, bin_route);
+		ft_dup2(shell->fd_in, 0, shell, bin_route);
 		ft_execve(bin_route, cmd->args, shell->envp, shell);
 	}
 	if (bin_route != NULL)

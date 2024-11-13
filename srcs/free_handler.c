@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/07 14:57:51 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 09:49:36 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,13 @@ void	ft_free_args(char **args)
 	int	i;
 
 	i = 0;
+	if (args == NULL)
+		return ;
 	while (args[i] != NULL)
 		free(args[i++]);
 	if (args != NULL)
 		free(args);
+	args = NULL;
 }
 
 void	free_cmd(t_cmd **cmd)

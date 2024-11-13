@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:05:47 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:29:47 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ char	*ft_putstr_instr(char *str, char *insert, int insert_len, int index)
 	int		j;
 	int		k;
 
-	new_str = (char *)malloc(sizeof(char) * (ft_strlen(str) + ft_strlen(insert)
-				+ 1));
 	i = 0;
 	j = 0;
 	k = 0;
+	new_str = (char *)ft_calloc(ft_strlen(str) + ft_strlen(insert) + 1,
+			sizeof(char));
 	while (str[k] != '\0')
 	{
 		if (i == index)
@@ -91,12 +91,11 @@ char	*ft_putstr_instr(char *str, char *insert, int insert_len, int index)
 				new_str[i++] = insert[j++];
 		new_str[i++] = str[k++];
 	}
-	new_str[i] = '\0';
 	free(str);
 	return (new_str);
 }
 
-// expand the sign $ in the matrix with the environment variable using bash logic
+// expand $ sign in the matrix with the environment variable using bash logic
 void	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
 {
 	static int	outside_quotes = 0;

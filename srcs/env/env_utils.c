@@ -6,11 +6,11 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:40:05 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:51:17 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:30:58 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 char	*ft_getenv(char *key, t_env **envp_list)
 {
@@ -75,19 +75,22 @@ int	ft_export_on_same_key(char *arg, t_shell *shell)
 	int		i;
 
 	i = 0;
-	while (arg[i] != '=' && arg[i] != '\0')
+	while (arg[i] != '\0' && arg[i] != '=')
 		i++;
-	if (arg[i] == '\0')
-		return (1);
 	tmp = shell->envp_list;
 	while (tmp != NULL)
 	{
-		if (ft_strncmp(tmp->key, ft_remove_quotes(arg, i), i - 1) == 0)
+		if (ft_strncmp(tmp->key, arg, i - 1) == 0)
 		{
-			if (tmp->value != NULL)
+			if (tmp->value != NULL && arg[i] != '\0')
+			{
 				free(tmp->value);
-			tmp->value = ft_strdup(ft_remove_quotes(&arg[i + 1],
-						ft_strlen(&arg[i + 1])));
+				tmp->value = NULL;
+			}
+			if (arg[i] == '=')
+				tmp->equal = 1;
+			if (arg[i] == '=' && arg[i + 1] != '\0')
+				tmp->value = ft_strdup(arg + i + 1);
 			return (1);
 		}
 		tmp = tmp->next;
@@ -98,28 +101,25 @@ int	ft_export_on_same_key(char *arg, t_shell *shell)
 void	ft_export_new_key(char *arg, t_shell *shell)
 {
 	t_env	*new;
-	t_env	*tmp;
+	t_env	*last;
 	int		i;
 
 	i = 0;
-	while (arg[i] != '=' && arg[i] != '\0')
+	while (arg[i] != '\0' && arg[i] != '=')
 		i++;
-	new = (t_env *)malloc(sizeof(t_env));
+	new = (t_env *)ft_calloc(1, sizeof(t_env));
 	if (new == NULL)
 		return ;
 	new->key = ft_strndup(arg, i);
 	new->equal = 1;
 	if (arg[i] == '\0')
 		new->equal = 0;
-	new->value = ft_strdup(arg + i + 1);
+	if (arg[i] != '\0')
+		new->value = ft_strdup(arg + i + 1);
 	new->next = NULL;
+	last = ft_lstlast_envp(shell->envp_list);
 	if (shell->envp_list == NULL)
 		shell->envp_list = new;
 	else
-	{
-		tmp = shell->envp_list;
-		while (tmp->next != NULL)
-			tmp = tmp->next;
-		tmp->next = new;
-	}
+		last->next = new;
 }

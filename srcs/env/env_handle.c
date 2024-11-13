@@ -6,49 +6,11 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 13:03:12 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:27:22 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-
-void ft_add_env(t_env **env, t_env *src)
-{
-	t_env	*new;
-	t_env	*tmp;
-
-	new = (t_env *)malloc(sizeof(t_env));
-	if (new == NULL)
-		return ;
-	new->key = ft_strdup(src->key);
-	new->equal = src->equal;
-	new->value = ft_strdup(src->value);
-	new->next = NULL;
-	if (*env == NULL)
-		*env = new;
-	else
-	{
-		tmp = *env;
-		while (tmp->next != NULL)
-			tmp = tmp->next;
-		tmp->next = new;
-	}
-}
-
-t_env	*ft_dupenv(t_env *env)
-{
-	t_env	*new;
-	t_env	*tmp;
-
-	new = NULL;
-	tmp = env;
-	while (tmp != NULL)
-	{
-		ft_add_env(&new, tmp);
-		tmp = tmp->next;
-	}
-	return (new);
-}
+#include "../../includes/minishell.h"
 
 int	ft_export_print(t_shell *shell)
 {
@@ -90,6 +52,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 			ft_export_new_key(cmd->args[i], shell);
 		}
 	}
+	ft_update_envp_matrix(shell);
 	return (1);
 }
 
@@ -130,6 +93,26 @@ int	ft_unset(t_cmd *cmd, t_shell *shell)
 			tmp = tmp->next;
 		}
 		i++;
+	}
+	ft_update_envp_matrix(shell);
+	return (1);
+}
+
+int	ft_env(t_shell *shell)
+{
+	t_env	*tmp;
+
+	tmp = shell->envp_list;
+	while (tmp != NULL)
+	{
+		if (tmp->equal == 1)
+		{
+			ft_putstr_fd(tmp->key, shell->fd_out);
+			ft_putstr_fd("=", shell->fd_out);
+			ft_putstr_fd(tmp->value, shell->fd_out);
+			ft_putstr_fd("\n", shell->fd_out);
+		}
+		tmp = tmp->next;
 	}
 	return (1);
 }

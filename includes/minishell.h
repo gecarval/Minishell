@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:34:25 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:31:24 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,19 @@ int					ft_unset(t_cmd *cmd, t_shell *shell);
 int					ft_env(t_shell *shell);
 int					ft_echo(t_cmd *cmd, t_shell *shell);
 
-// ENV
+// ENV_UTILS
 t_env				*ft_get_envp_list(char **envp);
+t_env				*ft_dupenv(t_env *env);
+t_env				*ft_lstlast_envp(t_env *lst);
 void				ft_sort_env(t_env *env);
-void				ft_export_new_key(char *arg, t_shell *shell);
-void				ft_sort_env(t_env *env);
+void				ft_update_envp_matrix(t_shell *shell);
 char				*ft_getenv(char *key, t_env **envp_list);
-int					ft_invalid_key(char *str);
+int					ft_lstsize_envp(t_env *lst);
+
+// ENV
+void				ft_export_new_key(char *arg, t_shell *shell);
 int					ft_export_on_same_key(char *arg, t_shell *shell);
+int					ft_invalid_key(char *str);
 
 // PARSER_UTILS
 void				add_args_and_output(t_cmd *new, char **args);
@@ -106,9 +111,11 @@ int					ft_check_unvalid(char *line);
 
 // EXPAND
 void				ft_expand_sign_matrix(char **matrix, t_shell *shell);
-void				ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell);
+void				ft_deal_with_quotes(char **matrix, int i, int j,
+						t_shell *shell);
 void				ft_remove_quotes_logic(char *str, int len);
-char				*ft_putstr_instr(char *str, char *insert, int insert_len, int index);
+char				*ft_putstr_instr(char *str, char *insert, int insert_len,
+						int index);
 char				*ft_strchr_validenv(const char *s);
 
 // PARSER
