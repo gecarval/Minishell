@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 09:49:36 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 14:04:47 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 // Just some free functions I think there is no need to explain
 void	ft_free_all(t_shell *shell)
 {
-	if (shell->cmd != NULL)
-		free_cmd(&shell->cmd);
 	if (shell->envp != NULL)
 		ft_free_args(shell->envp);
 	if (shell->envp_list != NULL)
 		ft_free_envp_list(shell->envp_list);
 	if (shell->line != NULL)
 		free(shell->line);
+	if (shell->cmd != NULL)
+		free_cmd(&shell->cmd);
 }
 
 void	ft_free_envp_list(t_env *env)

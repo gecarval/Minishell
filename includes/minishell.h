@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:31:24 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:50:36 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_shell
 	t_env			*envp_list;
 	char			*line;
 	char			**envp;
+	int				status;
 	int				pipe_fd[2];
 	int				fd_in;
 	int				fd_out;

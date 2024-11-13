@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 11:29:47 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 13:00:25 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,17 @@ void	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
 		matrix[i] = ft_putstr_instr(matrix[i], tmp2, ft_strlen(tmp) + 1, j);
 		free(tmp);
 		free(tmp2);
+	}
+	else if (matrix[i][j] == '$' && matrix[i][j + 1] == '?' && block_flag == 0)
+	{
+		tmp = ft_itoa(shell->status);
+		matrix[i] = ft_putstr_instr(matrix[i], tmp, ft_strlen(tmp), j);
+		free(tmp);
+	}
+	else if (matrix[i][j] == '$' && matrix[i][j + 1] == '$' && block_flag == 0)
+	{
+		tmp = ft_itoa(getpid());
+		matrix[i] = ft_putstr_instr(matrix[i], tmp, ft_strlen(tmp), j);
+		free(tmp);
 	}
 }

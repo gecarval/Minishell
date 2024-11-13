@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:33:22 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:57:09 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,21 +78,19 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 	int	flag;
 	int	i;
 
-	i = 1;
+	i = 0;
 	flag = 0;
-	while (cmd->args[i] != NULL)
+	while (cmd->args[++i] != NULL)
 	{
 		if (i == 1 && ft_strncmp(cmd->args[i], "-n", 2) == 0)
 		{
-			i++;
-			flag = 1;
+			flag = i++;
 			continue ;
 		}
 		else
 			ft_putstr_fd(cmd->args[i], shell->fd_out);
 		if (cmd->args[i + 1] != NULL)
 			ft_putstr_fd(" ", shell->fd_out);
-		i++;
 	}
 	if (flag == 0)
 		ft_putstr_fd("\n", shell->fd_out);

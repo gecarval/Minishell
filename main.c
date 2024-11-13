@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:40:56 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 14:17:32 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	ft_init_shell(t_shell *shell, char **envp)
 	shell->envp = ft_matdup(envp);
 	shell->line = NULL;
 	shell->cmd = NULL;
+	shell->status = 0;
 	shell->pipe_fd[0] = 0;
 	shell->pipe_fd[1] = 1;
 	shell->fd_in = 0;
@@ -103,7 +104,6 @@ int	main(int argc, char **argv, char **envp)
 		else if (*shell.line)
 			add_history(shell.line);
 		parse_line(&shell);
-		ft_print_cmd(shell.cmd);
 		exec_cmd(&shell);
 		free_cmd(&shell.cmd);
 		if (shell.line != NULL)

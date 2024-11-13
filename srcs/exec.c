@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 09:39:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 14:12:13 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 	{
 		printf("minishell: %s: command not found\n", shell->cmd->cmd);
 		ft_free_all(shell);
-		free(bin);
+		if (bin != NULL)
+			free(bin);
 		exit(1);
 	}
 }
@@ -45,9 +46,9 @@ void	ft_dup2(int fd, int fd2, t_shell *shell, char *bin_route)
 	if (dup2(fd, fd2) == -1)
 	{
 		printf("minishell: dup2 failed\n");
+		ft_free_all(shell);
 		if (bin_route != NULL)
 			free(bin_route);
-		ft_free_all(shell);
 		exit(1);
 	}
 }
@@ -67,7 +68,6 @@ char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
 		exit(1);
 	}
 	path = ft_split(tmp, ':');
-	free(tmp);
 	while (path[++i] != NULL)
 	{
 		tmp = ft_strjoin(path[i], "/");
@@ -81,7 +81,7 @@ char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
 		free(bin_route);
 	}
 	ft_free_args(path);
-	return (NULL);
+	return (ft_strdup(cmd->cmd));
 }
 
 void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
@@ -93,7 +93,6 @@ void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 		bin_route = ft_strdup(cmd->cmd);
 	else
 		bin_route = ft_get_bin_based_on_path(bin_route, shell, cmd);
-	printf("bin_route: %s\n", bin_route);
 	if (cmd->type == EXEC)
 	{
 		ft_execve(bin_route, cmd->args, shell->envp, shell);
@@ -151,7 +150,6 @@ void	exec_cmd(t_shell *shell)
 {
 	t_cmd	*cmd;
 	pid_t	pid;
-	int		status;
 
 	cmd = shell->cmd;
 	while (cmd != NULL)
@@ -170,9 +168,8 @@ void	exec_cmd(t_shell *shell)
 		}
 		else
 		{
-			// if (cmd->next == NULL && cmd->next->type == PIPE)
 			signal(SIGINT, ft_signal_hand);
-			waitpid(pid, &status, 0);
+			waitpid(pid, &shell->status, 0);
 		}
 		cmd = cmd->next;
 	}
