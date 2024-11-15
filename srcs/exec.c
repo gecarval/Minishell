@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 14:12:13 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 08:20:28 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 	}
 	else if (cmd->type == PIPE)
 	{
-		ft_dup2(shell->pipe_fd[1], 1, shell, bin_route);
+		ft_dup2(shell->fd_out, 1, shell, bin_route);
 		ft_dup2(shell->fd_in, 0, shell, bin_route);
 		ft_execve(bin_route, cmd->args, shell->envp, shell);
 	}
@@ -117,7 +117,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 {
 	int	workdone;
 
-	workdone = 0;
+	workdone = -1;
 	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
 		workdone = ft_exit(shell);
 	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
@@ -132,6 +132,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 		workdone = ft_env(shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
 		workdone = ft_echo(cmd, shell);
+	shell->status = workdone;
 	return (workdone);
 }
 
@@ -154,7 +155,7 @@ void	exec_cmd(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd != NULL)
 	{
-		if (ft_exec_on_parent(cmd, shell) == 1 && cmd->type == EXEC)
+		if (ft_exec_on_parent(cmd, shell) >= 0)
 		{
 			cmd = cmd->next;
 			continue ;

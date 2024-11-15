@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:50:36 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/14 10:23:11 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,13 @@ int					ft_is_pipe(char *line);
 int					ft_check_unvalid(char *line);
 
 // EXPAND
+void				ft_switch_flags(int *block_flag);
 void				ft_expand_sign_matrix(char **matrix, t_shell *shell);
 void				ft_deal_with_quotes(char **matrix, int i, int j,
 						t_shell *shell);
 void				ft_remove_quotes_logic(char *str, int len);
-char				*ft_putstr_instr(char *str, char *insert, int insert_len,
-						int index);
+char				*ft_putstr_instr(char *str, char *insert_str,
+						int insert_len, int insert_index);
 char				*ft_strchr_validenv(const char *s);
 
 // PARSER

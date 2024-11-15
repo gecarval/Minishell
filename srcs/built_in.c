@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:57:09 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 08:22:08 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@ int	ft_exit(t_shell *shell)
 {
 	ft_free_all(shell);
 	ft_putendl_fd("exit", shell->fd_out);
+	shell->status = 0;
 	exit(0);
-	return (1);
+	return (0);
 }
 
 void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
@@ -50,16 +51,28 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 
 int	ft_cd(t_cmd *cmd, t_shell *shell)
 {
+	int	chdrir_ret;
+
 	if (cmd->argc == 1)
-		return (1);
+		return (0);
 	else if (cmd->argc == 2)
 	{
-		chdir(cmd->args[1]);
+		chdrir_ret = chdir(cmd->args[1]);
+		if (chdrir_ret == -1)
+		{
+			ft_putstr_fd("minishell: cd: ", 2);
+			ft_putstr_fd(cmd->args[1], 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			return (1);
+		}
 		ft_update_oldpwd_and_pwd_path(shell);
 	}
 	else
-		printf("minishell: cd: too many arguments\n");
-	return (1);
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		return (1);
+	}
+	return (0);
 }
 
 int	ft_pwd(t_shell *shell)
@@ -70,7 +83,7 @@ int	ft_pwd(t_shell *shell)
 	ft_putstr_fd(cwd, shell->fd_out);
 	ft_putstr_fd("\n", shell->fd_out);
 	free(cwd);
-	return (1);
+	return (0);
 }
 
 int	ft_echo(t_cmd *cmd, t_shell *shell)
@@ -94,5 +107,5 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 	}
 	if (flag == 0)
 		ft_putstr_fd("\n", shell->fd_out);
-	return (1);
+	return (0);
 }

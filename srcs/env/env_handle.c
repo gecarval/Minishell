@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 11:27:22 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 08:22:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ft_export_print(t_shell *shell)
 		tmp = tmp->next;
 	}
 	ft_free_envp_list(new);
-	return (1);
+	return (0);
 }
 
 int	ft_export(t_cmd *cmd, t_shell *shell)
@@ -44,8 +44,10 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 	{
 		if (ft_invalid_key(cmd->args[i]) == 1)
 		{
-			printf("minishell: export: `%s': not a valid identifier\n",
-				cmd->args[i]);
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(cmd->args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			return (1);
 		}
 		else if (ft_export_on_same_key(cmd->args[i], shell) == 0)
 		{
@@ -53,7 +55,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 		}
 	}
 	ft_update_envp_matrix(shell);
-	return (1);
+	return (0);
 }
 
 int	ft_cmp_and_unset(t_env *tmp, t_env *prev, char *arg, t_shell *shell)
@@ -95,7 +97,7 @@ int	ft_unset(t_cmd *cmd, t_shell *shell)
 		i++;
 	}
 	ft_update_envp_matrix(shell);
-	return (1);
+	return (0);
 }
 
 int	ft_env(t_shell *shell)
@@ -114,5 +116,5 @@ int	ft_env(t_shell *shell)
 		}
 		tmp = tmp->next;
 	}
-	return (1);
+	return (0);
 }

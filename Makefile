@@ -6,7 +6,7 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/14 14:50:48 by gecarval          #+#    #+#              #
-#    Updated: 2024/11/13 11:26:17 by gecarval         ###   ########.fr        #
+#    Updated: 2024/11/14 08:45:16 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ SRCS =	main.c								\
 		./srcs/env/env_handle.c				\
 		./srcs/env/env_utils.c				\
 		./srcs/env/env_utils2.c				\
-		./srcs/expand_sign.c				\
+		./srcs/expand/expand_sign.c			\
+		./srcs/expand/expand_sign_utils.c	\
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
