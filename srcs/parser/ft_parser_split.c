@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 11:42:05 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 09:00:25 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,16 @@ char	**ft_parser_split(char *line, char *delim, t_shell *shell)
 		return (NULL);
 	while (new_line[++i] != '\0')
 	{
-		if (new_line[i] == '"')
-			while (new_line[++i] != '"' && new_line[i] != '\0')
+		if (new_line[i] == '\"')
+			while (new_line[++i] != '\"' && new_line[i] != '\0')
 				;
 		if (new_line[i] == '\'')
 			while (new_line[++i] != '\'' && new_line[i] != '\0')
 				;
 		if (new_line[i] == *delim)
-			new_line[i] = ';';
+			new_line[i] = -32;
 	}
-	matrix = ft_split(new_line, ';');
+	matrix = ft_split(new_line, -32);
 	free(new_line);
 	ft_expand_sign_matrix(matrix, shell);
 	return (matrix);

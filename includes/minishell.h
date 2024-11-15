@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/14 10:23:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 09:01:01 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,37 @@
 # include <sys/wait.h>
 # include <termios.h>
 
-# define PROMPT "minishell$ "
-# define CMD_BUFFER 131072
-# define EXEC 1
-# define REDIR 2
-# define PIPE 3
-# define LIST 4
-# define BACK 5
+# ifndef PROMPT
+#  define PROMPT "minishell$ "
+# endif
+
+# ifndef CMD_BUFFER
+#  define CMD_BUFFER 131072
+# endif
+
+# ifndef EXEC
+#  define EXEC 1
+# endif
+
+# ifndef REDIR
+#  define REDIR 2
+# endif
+
+# ifndef PIPE
+#  define PIPE 3
+# endif
+
+# ifndef LIST
+#  define LIST 4
+# endif
+
+# ifndef BACK
+#  define BACK 5
+# endif
+
+# ifndef HASH
+#  define HASH 5
+# endif
 
 // STRUCTS
 
@@ -49,6 +73,11 @@ typedef struct s_cmd
 	int				type;
 	struct s_cmd	*next;
 }					t_cmd;
+
+typedef struct	s_hashtable
+{
+	t_cmd	*cmd[HASH];
+}	t_hashtable;
 
 typedef struct s_env
 {
@@ -138,3 +167,4 @@ pid_t				ft_fork(t_shell *shell);
 void				exec_cmd(t_shell *shell);
 
 #endif
+
