@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 11:25:17 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 12:05:03 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,9 @@ int	main(int argc, char **argv, char **envp)
 		signal(SIGINT, ft_signal_handler);
 		shell.line = ft_limit_buffer(readline(PROMPT));
 		if (shell.line == NULL)
-		{
 			write(1, "exit\n", 5);
+		if (shell.line == NULL)
 			break ;
-		}
 		add_history(shell.line);
 		parse_line(&shell);
 		exec_cmd(&shell);

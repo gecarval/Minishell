@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:54:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 09:58:40 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:45:23 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strndup(const char *s, size_t n)
 	size_t	i;
 
 	i = 0;
-	if (s == NULL || n == 0)
+	if (s == NULL || n <= 0)
 		return (NULL);
 	new = (char *)ft_calloc((n + 1), sizeof(char));
 	if (new == NULL)
