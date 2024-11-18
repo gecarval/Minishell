@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 08:20:28 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:56:47 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ pid_t	ft_fork(t_shell *shell)
 	pid = fork();
 	if (pid < 0)
 	{
-		printf("minishell: fork failed\n");
+		ft_putstr_fd("minishell: fork failed\n", 2);
 		ft_free_all(shell);
-		exit(1);
+		exit(2);
 	}
 	return (pid);
 }
@@ -37,7 +37,7 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 		ft_free_all(shell);
 		if (bin != NULL)
 			free(bin);
-		exit(1);
+		exit(127);
 	}
 }
 
@@ -49,7 +49,7 @@ void	ft_dup2(int fd, int fd2, t_shell *shell, char *bin_route)
 		ft_free_all(shell);
 		if (bin_route != NULL)
 			free(bin_route);
-		exit(1);
+		exit(2);
 	}
 }
 
@@ -61,11 +61,11 @@ char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
 
 	i = -1;
 	tmp = ft_getenv("PATH", &shell->envp_list);
-	if (tmp == NULL || cmd->cmd == NULL)
+	if (tmp == NULL)
 	{
 		printf("minishell: %s: command not found\n", cmd->cmd);
 		ft_free_all(shell);
-		exit(1);
+		exit(127);
 	}
 	path = ft_split(tmp, ':');
 	while (path[++i] != NULL)
@@ -163,6 +163,7 @@ void	exec_cmd(t_shell *shell)
 		pid = ft_fork(shell);
 		if (pid == 0)
 		{
+			signal(SIGQUIT, SIG_DFL);
 			ft_exec_on_child(shell, cmd);
 			ft_free_all(shell);
 			exit(0);
@@ -171,6 +172,10 @@ void	exec_cmd(t_shell *shell)
 		{
 			signal(SIGINT, ft_signal_hand);
 			waitpid(pid, &shell->status, 0);
+			if (WIFEXITED(shell->status))
+				shell->status = WEXITSTATUS(shell->status);
+			else if (shell->status == 2)
+				shell->status = (shell->status << 6) + 2;
 		}
 		cmd = cmd->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 11:33:23 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:36:01 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void	add_args_and_output(t_cmd *new, char **args)
 // It allocates memory for the new command
 // It adds the command to the command structure List
 // If the command structure List is empty,
-//	it sets the new command as the head of the List
+// it sets the new command as the head of the List
 // If the command structure List is not empty,
-//	it sets the new command as the last command of the List
+// it sets the new command as the last command of the List
 void	add_cmd(t_shell *shell, char **args, int is_pipe)
 {
 	t_cmd	*new;
@@ -74,14 +74,13 @@ void	parse_line(t_shell *shell)
 	int		i;
 
 	i = 0;
-	if (!shell->line)
-		return ;
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
-	cmds = ft_split(shell->line, '|');
-	while (cmds[i])
+	cmds = ft_parser_split(shell->line, '|');
+	while (cmds[i] != NULL)
 	{
-		args = ft_parser_split(cmds[i], " ", shell);
+		args = ft_parser_split(cmds[i], ' ');
+		ft_expand_sign_matrix(args, shell);
 		add_cmd(shell, args, ft_is_pipe(shell->line));
 		ft_free_args(args);
 		free(cmds[i]);

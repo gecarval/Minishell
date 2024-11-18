@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 09:01:01 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:35:11 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }					t_cmd;
 
-typedef struct	s_hashtable
+typedef struct s_hashtable
 {
-	t_cmd	*cmd[HASH];
-}	t_hashtable;
+	t_cmd			*cmd[HASH];
+}					t_hashtable;
 
 typedef struct s_env
 {
@@ -107,14 +107,42 @@ typedef struct s_shell
 char				**ft_matdup(char **mat);
 char				*ft_limit_buffer(char *line);
 
-// BUILTINS
-int					ft_exit(t_shell *shell);
-int					ft_cd(t_cmd *cmd, t_shell *shell);
-int					ft_pwd(t_shell *shell);
-int					ft_export(t_cmd *cmd, t_shell *shell);
-int					ft_unset(t_cmd *cmd, t_shell *shell);
-int					ft_env(t_shell *shell);
-int					ft_echo(t_cmd *cmd, t_shell *shell);
+// FREE
+void				free_cmd(t_cmd **cmd);
+void				ft_free_args(char **args);
+void				ft_free_all(t_shell *shell);
+void				ft_free_envp_list(t_env *env);
+
+// INIT
+void				ft_init_shell(t_shell *shell, char **envp);
+
+// UTILS
+int					ft_exit_atol(char *str);
+int					ft_lstsize_cmd(t_cmd *lst);
+
+// PARSER_UTILS
+void				add_args_and_output(t_cmd *new, char **args);
+void				ft_handle_ispipe(t_cmd *new, int is_pipe);
+char				*ft_limit_buffer(char *line);
+char				*ft_remove_quotes(char *str, int len);
+char				**ft_parser_split(char *line, char delim);
+int					ft_is_pipe(char *line);
+int					ft_check_unvalid(char *line);
+
+// PARSER
+void				add_args_and_output(t_cmd *new, char **args);
+void				add_cmd(t_shell *shell, char **args, int is_pipe);
+void				parse_line(t_shell *shell);
+
+// EXPAND
+void				ft_switch_flags(int *block_flag);
+void				ft_expand_sign_matrix(char **matrix, t_shell *shell);
+void				ft_deal_with_quotes(char **matrix, int i, int j,
+						t_shell *shell);
+void				ft_remove_quotes_logic(char *str, int len);
+char				*ft_putstr_instr(char *str, char *insert_str,
+						int insert_len, int insert_index);
+char				*ft_strchr_validenv(const char *s);
 
 // ENV_UTILS
 t_env				*ft_get_envp_list(char **envp);
@@ -130,35 +158,14 @@ void				ft_export_new_key(char *arg, t_shell *shell);
 int					ft_export_on_same_key(char *arg, t_shell *shell);
 int					ft_invalid_key(char *str);
 
-// PARSER_UTILS
-void				add_args_and_output(t_cmd *new, char **args);
-void				ft_handle_ispipe(t_cmd *new, int is_pipe);
-char				*ft_limit_buffer(char *line);
-char				*ft_remove_quotes(char *str, int len);
-char				**ft_parser_split(char *line, char *delim, t_shell *shell);
-int					ft_is_pipe(char *line);
-int					ft_check_unvalid(char *line);
-
-// EXPAND
-void				ft_switch_flags(int *block_flag);
-void				ft_expand_sign_matrix(char **matrix, t_shell *shell);
-void				ft_deal_with_quotes(char **matrix, int i, int j,
-						t_shell *shell);
-void				ft_remove_quotes_logic(char *str, int len);
-char				*ft_putstr_instr(char *str, char *insert_str,
-						int insert_len, int insert_index);
-char				*ft_strchr_validenv(const char *s);
-
-// PARSER
-void				add_args_and_output(t_cmd *new, char **args);
-void				add_cmd(t_shell *shell, char **args, int is_pipe);
-void				parse_line(t_shell *shell);
-
-// FREE
-void				free_cmd(t_cmd **cmd);
-void				ft_free_args(char **args);
-void				ft_free_all(t_shell *shell);
-void				ft_free_envp_list(t_env *env);
+// BUILTINS
+int					ft_exit(t_shell *shell);
+int					ft_cd(t_cmd *cmd, t_shell *shell);
+int					ft_pwd(t_shell *shell);
+int					ft_export(t_cmd *cmd, t_shell *shell);
+int					ft_unset(t_cmd *cmd, t_shell *shell);
+int					ft_env(t_shell *shell);
+int					ft_echo(t_cmd *cmd, t_shell *shell);
 
 // EXEC_UTILS
 pid_t				ft_fork(t_shell *shell);
@@ -167,4 +174,3 @@ pid_t				ft_fork(t_shell *shell);
 void				exec_cmd(t_shell *shell);
 
 #endif
-

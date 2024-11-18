@@ -6,7 +6,7 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/14 14:50:48 by gecarval          #+#    #+#              #
-#    Updated: 2024/11/14 08:45:16 by gecarval         ###   ########.fr        #
+#    Updated: 2024/11/18 10:22:58 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ SRCS =	main.c								\
 		./srcs/parser/parser.c				\
 		./srcs/parser/ft_parser_split.c		\
 		./srcs/exec.c						\
+		./srcs/utils.c						\
 		./srcs/built_in.c					\
+		./srcs/init_shell.c					\
 		./srcs/env/env_handle.c				\
 		./srcs/env/env_utils.c				\
 		./srcs/env/env_utils2.c				\

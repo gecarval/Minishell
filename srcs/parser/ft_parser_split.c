@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 09:00:25 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:09:32 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,12 @@ void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
 // It copies the line until the delimiter
 // And ignores delimiters if it is between quotes
 // It returns a matrix
-char	**ft_parser_split(char *line, char *delim, t_shell *shell)
+char	**ft_parser_split(char *line, char delim)
 {
 	char	**matrix;
 	char	*new_line;
 	int		i;
 
-	if (!line || !delim)
-		return (NULL);
 	i = -1;
 	new_line = ft_strdup(line);
 	if (new_line == NULL)
@@ -83,14 +81,13 @@ char	**ft_parser_split(char *line, char *delim, t_shell *shell)
 		if (new_line[i] == '\"')
 			while (new_line[++i] != '\"' && new_line[i] != '\0')
 				;
-		if (new_line[i] == '\'')
+		else if (new_line[i] == '\'')
 			while (new_line[++i] != '\'' && new_line[i] != '\0')
 				;
-		if (new_line[i] == *delim)
+		else if (new_line[i] == delim)
 			new_line[i] = -32;
 	}
 	matrix = ft_split(new_line, -32);
 	free(new_line);
-	ft_expand_sign_matrix(matrix, shell);
 	return (matrix);
 }

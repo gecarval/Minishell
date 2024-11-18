@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 08:20:19 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/14 09:03:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:00:33 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ char	*ft_strchr_validenv(const char *s)
 	int	s_len;
 
 	if (s == NULL)
-		return ((char *)s);
-	if (ft_isalpha((s[0]) == 0 && s[0] != '_') || s[0] == '\"')
+		return (NULL);
+	if (ft_isdigit((s[0])) == 1)
+		return ((char *)(s + 1));
+	if (ft_isalpha((s[0]) == 0 && s[0] != '_') || s[0] == '\"' || s[0] == '\'')
 		return ((char *)s);
 	s_len = ft_strlen(s);
 	while (s_len >= 0 && *s != '=')

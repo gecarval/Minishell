@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 09:01:49 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/15 15:36:39 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	ft_check_unvalid(char *line)
 		i++;
 	}
 	if (dquotes % 2 != 0 || squotes % 2 != 0)
-		printf("minishell: syntax error (unclosed quotes)\n");
+		ft_putendl_fd("minishell: syntax error (unclosed quotes)", 2);
 	if (dquotes % 2 != 0 || squotes % 2 != 0)
 		return (1);
 	return (0);

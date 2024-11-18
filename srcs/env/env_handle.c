@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 08:22:41 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:30:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,14 @@ int	ft_export_print(t_shell *shell)
 	{
 		ft_putstr_fd("declare -x ", shell->fd_out);
 		ft_putstr_fd(tmp->key, shell->fd_out);
-		ft_putstr_fd("=\"", shell->fd_out);
-		ft_putstr_fd(tmp->value, shell->fd_out);
-		ft_putstr_fd("\"\n", shell->fd_out);
+		if (tmp->equal == 1)
+		{
+			ft_putstr_fd("=\"", shell->fd_out);
+			ft_putstr_fd(tmp->value, shell->fd_out);
+			ft_putstr_fd("\"\n", shell->fd_out);
+		}
+		else
+			ft_putstr_fd("\n", shell->fd_out);
 		tmp = tmp->next;
 	}
 	ft_free_envp_list(new);
