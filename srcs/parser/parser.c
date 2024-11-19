@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 15:36:01 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/19 16:38:32 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,32 @@ void	add_cmd(t_shell *shell, char **args, int is_pipe)
 	}
 }
 
+void	ft_parse_redir_and_set_fd(t_shell *shell)
+{
+	char	*new_line;
+	int		i;
+
+	i = 0;
+	new_line = ft_strdup(shell->line);
+	while (new_line[i] != '\0')
+	{
+		if (new_line[i] == '>' || new_line[i] == '<')
+		{
+			if (new_line[i] == '>')
+				shell->fd_out = 1;
+			else
+				shell->fd_in = 0;
+			i++;
+			if (new_line[i] == '>')
+				shell->fd_out = 2;
+			else if (new_line[i] == '<')
+				shell->fd_in = 0;
+		}
+		i++;
+	}
+	free(new_line);
+}
+
 // This function parses the line and adds the commands
 // to the command structure List
 // It splits the line by pipes and then by spaces using
@@ -76,6 +102,7 @@ void	parse_line(t_shell *shell)
 	i = 0;
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
+//	ft_parse_redir_and_set_fd(shell);
 	cmds = ft_parser_split(shell->line, '|');
 	while (cmds[i] != NULL)
 	{

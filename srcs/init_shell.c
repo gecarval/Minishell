@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:38 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 10:19:51 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:27:30 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,6 @@ void	ft_init_shell(t_shell *shell, char **envp)
 	shell->status = 0;
 	shell->pipe_fd[0] = 0;
 	shell->pipe_fd[1] = 1;
-	shell->fd_in = 0;
-	shell->fd_out = 1;
+	shell->fd_in = STDIN_FILENO;
+	shell->fd_out = STDOUT_FILENO;
 }
