@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 15:06:37 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/19 11:45:55 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
 	return (ft_strdup(cmd->cmd));
 }
 
-void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
+void	ft_exec_on_path(t_shell *shell, t_cmd *cmd)
 {
 	char	*bin_route;
 
@@ -98,11 +98,7 @@ void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 		ft_execve(bin_route, cmd->args, shell->envp, shell);
 	}
 	else if (cmd->type == PIPE)
-	{
-		ft_dup2(shell->fd_out, 1, shell, bin_route);
-		ft_dup2(shell->fd_in, 0, shell, bin_route);
 		ft_execve(bin_route, cmd->args, shell->envp, shell);
-	}
 	if (bin_route != NULL)
 		free(bin_route);
 }
@@ -114,6 +110,19 @@ void	ft_exec_on_child(t_shell *shell, t_cmd *cmd)
 // To changem the directory or print the working directory
 // Since child processes are independent from the parent process
 int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
+{
+	int	workdone;
+
+	workdone = -1;
+	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+		workdone = ft_exit(shell);
+	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
+		workdone = ft_cd(cmd, shell);
+	shell->status = workdone;
+	return (workdone);
+}
+
+int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 {
 	int	workdone;
 
@@ -155,28 +164,40 @@ void	exec_cmd(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd != NULL)
 	{
-		if (ft_exec_on_parent(cmd, shell) >= 0)
-		{
-			cmd = cmd->next;
-			continue ;
-		}
+		if (shell->cmd->type == EXEC && ft_exec_on_parent(cmd, shell) >= 0)
+			break ;
+		if (cmd->next != NULL && cmd->type == PIPE)
+			pipe(shell->pipe_fd);
 		pid = ft_fork(shell);
 		if (pid == 0)
 		{
 			signal(SIGQUIT, SIG_DFL);
-			ft_exec_on_child(shell, cmd);
+			if (cmd->type == PIPE && cmd->next != NULL)
+				ft_dup2(shell->pipe_fd[1], shell->fd_out, shell, NULL);
+			close(shell->pipe_fd[0]);
+			if (ft_exec_on_builtin(cmd, shell) >= 0)
+			{
+				close(shell->pipe_fd[1]);
+				exit(shell->status);
+			}
+			ft_exec_on_path(shell, cmd);
 			ft_free_all(shell);
+			close(shell->pipe_fd[1]);
 			exit(0);
 		}
 		else
 		{
 			signal(SIGINT, ft_signal_hand);
-			waitpid(pid, &shell->status, 0);
-			if (WIFEXITED(shell->status))
-				shell->status = WEXITSTATUS(shell->status);
-			else if (shell->status == 2)
-				shell->status = (shell->status << 6) + 2;
+			if (cmd->type == PIPE && cmd->next != NULL)
+				ft_dup2(shell->pipe_fd[0], shell->fd_in, shell, NULL);
+			if (cmd->type == PIPE && cmd->next != NULL)
+				close(shell->pipe_fd[1]);
 		}
 		cmd = cmd->next;
 	}
+	waitpid(pid, &shell->status, 0);
+	if (WIFEXITED(shell->status))
+		shell->status = WEXITSTATUS(shell->status);
+	else if (shell->status == 2)
+		shell->status = (shell->status << 6) + 2;
 }
