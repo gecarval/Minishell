@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/19 16:38:15 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/20 12:51:07 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,32 @@ void	ft_signal_handler(int signum)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+}
+
+// This function prints the command structure List for debugging purposes
+void	ft_print_cmd(t_cmd *cmd)
+{
+	t_cmd	*tmp;
+	int		i;
+
+	tmp = cmd;
+	while (tmp != NULL)
+	{
+		printf("cmd: %s\n", tmp->cmd);
+		i = -1;
+		if (tmp->args != NULL)
+			while (tmp->args[++i] != NULL)
+				printf("arg[%d]: %s\n", i, tmp->args[i]);
+		printf("argc: %d\n", tmp->argc);
+		printf("type: %d\n", tmp->type);
+		tmp = tmp->next;
+	}
+}
+
+void	ft_reset_fd(t_shell *shell)
+{
+	shell->fd_in = STDIN_FILENO;
+	shell->fd_out = STDOUT_FILENO;
 }
 
 // This start by initializing shell data struct
@@ -47,12 +73,12 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		add_history(shell.line);
 		parse_line(&shell);
+		ft_print_cmd(shell.cmd);
 		exec_cmd(&shell);
 		free_cmd(&shell.cmd);
 		if (shell.line != NULL)
 			free(shell.line);
-		shell.fd_in = STDIN_FILENO;
-		shell.fd_out = STDOUT_FILENO;
+		ft_reset_fd(&shell);
 	}
 	ft_free_all(&shell);
 	return (0);

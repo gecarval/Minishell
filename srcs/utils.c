@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:18:39 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 11:29:10 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:11:52 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,24 @@ int	ft_exit_atol(char *str)
 		return (1);
 	}
 	return ((int)((ret * sign) % 256));
+}
+
+int	ft_chrcmpstr(char chr, char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		if (str[i++] == chr)
+			return (0);
+	return (1);
+}
+
+int	ft_skiptochr(char *line, int i, char chr)
+{
+	while (line[i] != '\0' && line[i] != chr)
+		i++;
+	return (i);
 }
 
 int	ft_lstsize_cmd(t_cmd *lst)

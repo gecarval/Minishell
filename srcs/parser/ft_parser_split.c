@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 15:09:32 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:31:23 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
 			ft_deal_with_quotes(matrix, i, j, shell);
 			j++;
 		}
-		ft_remove_quotes_logic(matrix[i], ft_strlen(matrix[i]));
 		i++;
 	}
 }
@@ -66,7 +65,7 @@ void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
 // It copies the line until the delimiter
 // And ignores delimiters if it is between quotes
 // It returns a matrix
-char	**ft_parser_split(char *line, char delim)
+char	**ft_parser_split(char *line, char *delim)
 {
 	char	**matrix;
 	char	*new_line;
@@ -79,12 +78,10 @@ char	**ft_parser_split(char *line, char delim)
 	while (new_line[++i] != '\0')
 	{
 		if (new_line[i] == '\"')
-			while (new_line[++i] != '\"' && new_line[i] != '\0')
-				;
+			i = ft_skiptochr(new_line, ++i, '\"');
 		else if (new_line[i] == '\'')
-			while (new_line[++i] != '\'' && new_line[i] != '\0')
-				;
-		else if (new_line[i] == delim)
+			i = ft_skiptochr(new_line, ++i, '\'');
+		else if (ft_chrcmpstr(new_line[i], delim) == 0)
 			new_line[i] = -32;
 	}
 	matrix = ft_split(new_line, -32);

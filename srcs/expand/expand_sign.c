@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 15:50:56 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:31:58 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,6 @@ void	ft_sign_and_question_mark(char **matrix, int i, int j, t_shell *shell)
 	free(tmp);
 }
 
-void	ft_double_sign(char **matrix, int i, int j)
-{
-	char	*tmp;
-
-	tmp = ft_itoa(getpid());
-	matrix[i] = ft_putstr_instr(matrix[i], tmp, 2, j);
-	free(tmp);
-}
-
 void	ft_sign_and_env(char **matrix, int i, int j, t_shell *shell)
 {
 	char	*tmp;
@@ -89,8 +80,6 @@ void	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
 		block_flag = 1;
 	if (matrix[i][j] == '$' && matrix[i][j + 1] == '?' && block_flag == 0)
 		ft_sign_and_question_mark(matrix, i, j, shell);
-	else if (matrix[i][j] == '$' && matrix[i][j + 1] == '$' && block_flag == 0)
-		ft_double_sign(matrix, i, j);
 	else if (matrix[i][j] == '$' && block_flag == 0)
 		ft_sign_and_env(matrix, i, j, shell);
 }
