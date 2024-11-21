@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 12:51:07 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/21 16:33:26 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,21 @@ void	ft_print_cmd(t_cmd *cmd)
 				printf("arg[%d]: %s\n", i, tmp->args[i]);
 		printf("argc: %d\n", tmp->argc);
 		printf("type: %d\n", tmp->type);
+		printf("fd_in: %d\n", tmp->fd.fd_in);
+		printf("fd_out: %d\n", tmp->fd.fd_out);
+		if (tmp->fd.filename_in != NULL)
+			printf("filename_in: %s\n", tmp->fd.filename_in);
+		else
+			printf("filename_in: %s\n",  "(null)");
+		if (tmp->fd.filename_out != NULL)
+			printf("filename_out: %s\n", tmp->fd.filename_out);
+		else
+			printf("filename_out: %s\n", "(null)");
 		tmp = tmp->next;
 	}
 }
 
-void	ft_reset_fd(t_shell *shell)
+void	ft_default_fd(t_shell *shell)
 {
 	shell->fd_in = STDIN_FILENO;
 	shell->fd_out = STDOUT_FILENO;
@@ -78,7 +88,7 @@ int	main(int argc, char **argv, char **envp)
 		free_cmd(&shell.cmd);
 		if (shell.line != NULL)
 			free(shell.line);
-		ft_reset_fd(&shell);
+		ft_default_fd(&shell);
 	}
 	ft_free_all(&shell);
 	return (0);

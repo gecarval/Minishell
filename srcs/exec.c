@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/19 16:37:44 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/21 16:20:33 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,13 +117,13 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 	int	workdone;
 
 	workdone = -1;
-	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+	if (ft_strncmp(cmd->cmd, "exit", 4) == 0)
 		workdone = ft_exit(shell);
-	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
+	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
-	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
+	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
 		workdone = ft_export(cmd, shell);
-	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
+	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		workdone = ft_unset(cmd, shell);
 	shell->status = workdone;
 	return (workdone);
@@ -134,19 +134,19 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 	int	workdone;
 
 	workdone = -1;
-	if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+	if (ft_strncmp(cmd->cmd, "exit", 4) == 0)
 		workdone = ft_exit(shell);
-	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
+	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
-	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
+	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
 		workdone = ft_pwd(shell);
-	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
+	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
 		workdone = ft_export(cmd, shell);
-	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
+	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		workdone = ft_unset(cmd, shell);
-	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
+	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
 		workdone = ft_env(shell);
-	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
+	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
 		workdone = ft_echo(cmd, shell);
 	shell->status = workdone;
 	return (workdone);
@@ -199,13 +199,17 @@ int	ft_exec_if_pipe(t_shell *shell)
 		shell->status = WEXITSTATUS(shell->status);
 	else if (shell->status == 2)
 		shell->status = (shell->status << 6) + 2;
+	ft_free_all(shell);
 	return (shell->status);
 }
 
 int	ft_normal_exec(t_cmd *cmd, t_shell *shell)
 {
 	if (ft_exec_on_builtin(cmd, shell) >= 0)
+	{
+		ft_free_all(shell);
 		exit(shell->status);
+	}
 	ft_exec_on_path(shell, cmd);
 	ft_free_all(shell);
 	return (shell->status);
@@ -225,7 +229,7 @@ void	exec_cmd(t_shell *shell)
 	if (pid == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
-	if (shell->cmd->type == PIPE)
+		if (shell->cmd->type == PIPE)
 			exit(ft_exec_if_pipe(shell));
 		else
 			exit(ft_normal_exec(shell->cmd, shell));

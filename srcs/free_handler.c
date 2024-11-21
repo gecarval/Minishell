@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 15:13:56 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/21 15:51:15 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ void	free_cmd(t_cmd **cmd)
 			free((*cmd)->fd.filename_in);
 		if ((*cmd)->fd.filename_out != NULL)
 			free((*cmd)->fd.filename_out);
+		if ((*cmd)->fd.fd_out != STDOUT_FILENO)
+			close((*cmd)->fd.fd_out);
+		if ((*cmd)->fd.fd_in != STDIN_FILENO)
+			close((*cmd)->fd.fd_in);
 		if ((*cmd)->cmd != NULL)
 			free((*cmd)->cmd);
 		if (*cmd != NULL)

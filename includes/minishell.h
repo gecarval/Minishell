@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 16:11:09 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/21 16:01:23 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_fd
 {
 	int				fd_in;
 	int				fd_out;
+	int				fd_heredoc;
 	char			*filename_in;
 	char			*filename_out;
 }					t_fd;
@@ -115,7 +116,6 @@ int					ft_chrcmpstr(char chr, char *str);
 int					ft_skiptochr(char *line, int i, char chr);
 
 // PARSER_UTILS
-void				add_args_and_output(t_cmd *new, char **args);
 void				ft_handle_ispipe(t_cmd *new, int is_pipe);
 char				*ft_limit_buffer(char *line);
 char				*ft_remove_quotes(char *str, int len);
@@ -124,8 +124,9 @@ int					ft_is_pipe(char *line);
 int					ft_check_unvalid(char *line);
 
 // PARSER
-void				add_args_and_output(t_cmd *new, char **args);
-void				add_cmd(t_shell *shell, char **args, int is_pipe);
+void				add_args_and_output(t_cmd *new, char **args, t_fd *fds);
+void				add_cmd(t_shell *shell, char **args, t_fd *fds,
+						int is_pipe);
 void				parse_line(t_shell *shell);
 
 // EXPAND

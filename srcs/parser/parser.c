@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 16:40:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/21 16:39:22 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,31 @@ int	ft_strlen_meta(char *str)
 		i++;
 	return (i);
 }
+
+void	ft_init_fd(t_fd *fds)
+{
+	fds->fd_in = STDIN_FILENO;
+	fds->fd_out = STDOUT_FILENO;
+	fds->fd_heredoc = 0;
+	fds->filename_in = NULL;
+	fds->filename_out = NULL;
+}
+
+void	ft_reset_fd(t_fd *fds)
+{
+	if (fds->fd_in != STDIN_FILENO)
+		close(fds->fd_in);
+	if (fds->fd_out != STDOUT_FILENO)
+		close(fds->fd_out);
+	if (fds->fd_heredoc == 1)
+		fds->fd_heredoc = 0;
+	if (fds->filename_in != NULL)
+		free(fds->filename_in);
+	if (fds->filename_out != NULL)
+		free(fds->filename_out);
+	ft_init_fd(fds);
+}
+
 char	*ft_strchrstr(char *str, char *to_find)
 {
 	int	i;
@@ -49,93 +74,121 @@ char	*ft_strchr_dupfilename(char *line, int i)
 		return (NULL);
 	while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
 		i++;
-	if (line[i] == '\n')
+	if (line[i] == '\n' || line[i] == '\0' || line[i] == '>' || line[i] == '<'
+		|| line[i] == '|')
 		return (NULL);
 	j = i;
-	while (line[j] != '\0' && line[j] != ' ')
+	while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
 		j++;
-	filename = (char *)malloc(sizeof(char) * (j - i + 1));
+	filename = (char *)ft_calloc((j - i + 2), sizeof(char));
 	if (filename == NULL)
 		return (NULL);
 	j = 0;
 	while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
 		&& line[i] != '\n')
-		filename[j++] = line[i++];
-	filename[j] = '\0';
+	{
+		filename[j++] = line[i];
+		line[i++] = ' ';
+	}
 	return (filename);
 }
 
-t_fd	ft_open_file(t_shell *shell, char *line, int i)
+void	ft_open_file(char *line, int i, t_fd *fds)
 {
-	t_fd	fds;
-
+	ft_init_fd(fds);
 	if (line[i] == '>')
 	{
+		line[i] = ' ';
 		if (line[i + 1] == '>')
 		{
-			fds.filename_out = ft_strchr_dupfilename(line, i + 2);
-			fds.fd_out = open(ft_strchrstr(line, ">>") + 2,
-					O_CREAT | O_WRONLY | O_APPEND, 0644);
+			line[i + 1] = ' ';
+			fds->filename_out = ft_strchr_dupfilename(line, i + 2);
+			fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_APPEND,
+					0644);
 		}
 		else
 		{
-			fds.filename_out = ft_strchr_dupfilename(line, i + 1);
-			fds.fd_out = open(ft_strchrstr(line, ">") + 1,
-					O_CREAT | O_WRONLY | O_TRUNC, 0644);
+			fds->filename_out = ft_strchr_dupfilename(line, i + 1);
+			fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_TRUNC,
+					0644);
 		}
 	}
 	else if (line[i] == '<')
 	{
-		fds.fd_in = open(ft_strstr(line, "<") + 1, O_RDONLY);
-		fds.filename_in = ft_strchr_dupfilename(line, i + 1);
+		line[i] = ' ';
+		if (line[i + 1] == '<')
+		{
+			line[i + 1] = ' ';
+			fds->fd_heredoc = 1;
+			fds->filename_in = ft_strchr_dupfilename(line, i + 2);
+			fds->fd_in = open(fds->filename_in, O_RDONLY);
+		}
+		else
+		{
+			fds->fd_heredoc = 0;
+			fds->filename_in = ft_strchr_dupfilename(line, i + 1);
+			fds->fd_in = open(fds->filename_in, O_RDONLY);
+		}
 	}
-	return (fds);
 }
 
-// This function removes the redirection and the filename
-// It shifts the string to the left
-// It sets the redirection to a space
-void	ft_remove_redir_and_filename(char *line, int i)
+void	ft_reset_fd_out(t_fd *fds)
 {
-	int	j;
-
-	j = i;
-	while (line[j] != '\0')
+	if (fds->fd_out != STDOUT_FILENO)
 	{
-		line[j] = line[j + 1];
-		j++;
+		close(fds->fd_out);
+		fds->fd_out = STDOUT_FILENO;
 	}
-	line[j] = ' ';
+	if (fds->filename_out != NULL)
+	{
+		free(fds->filename_out);
+		fds->filename_out = NULL;
+	}
+}
+
+void	ft_reset_fd_in(t_fd *fds)
+{
+	if (fds->fd_heredoc == 1)
+		fds->fd_heredoc = 0;
+	if (fds->fd_in != STDIN_FILENO)
+	{
+		close(fds->fd_in);
+		fds->fd_in = STDIN_FILENO;
+	}
+	if (fds->filename_in != NULL)
+	{
+		free(fds->filename_in);
+		fds->filename_in = NULL;
+	}
 }
 
 // verify the filename and if exits
 // open the file, the fd and sets the redir type
-t_fd	ft_parse_redir_and_set_fd(t_shell *shell, char *line)
+void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
 {
-	t_fd	fds;
-	int		i;
+	int	i;
 
 	i = -1;
-	fds.fd_in = STDIN_FILENO;
-	fds.fd_out = STDOUT_FILENO;
-	fds.filename_in = NULL;
-	fds.filename_out = NULL;
+	ft_init_fd(fds);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '>')
 		{
-			fds = ft_open_file(shell, line, i);
-			ft_remove_redir_and_filename(line, i);
+			ft_reset_fd_out(fds);
+			ft_open_file(line, i, fds);
+			if (line[i + 1] == '>')
+				i++;
 		}
 		else if (line[i] == '<')
 		{
-			fds = ft_open_file(shell, line, i);
-			ft_remove_redir_and_filename(line, i);
+			ft_reset_fd_in(fds);
+			ft_open_file(line, i, fds);
+			if (line[i + 1] == '<')
+				i++;
 		}
 		else if (line[i] == '\'' || line[i] == '\"')
 			i = ft_skiptochr(line, i + 1, line[i]);
 	}
-	return (fds);
 }
 
 // This function adds the arguments
@@ -152,7 +205,10 @@ void	add_args_and_output(t_cmd *new, char **args, t_fd *fds)
 		i++;
 	new->argc = i;
 	new->args = ft_matdup(args);
-	new->fd = *fds;
+	new->fd.fd_in = fds->fd_in;
+	new->fd.fd_out = fds->fd_out;
+	new->fd.filename_in = fds->filename_in;
+	new->fd.filename_out = fds->filename_out;
 }
 
 // This function adds the command to the command structure List
@@ -209,12 +265,11 @@ void	parse_line(t_shell *shell)
 	while (cmds[i] != NULL)
 	{
 		ft_expand_sign_matrix(&cmds[i], shell);
-		fds = ft_parse_redir_and_set_fd(shell, cmds[i]);
-		args = ft_parser_split(cmds[i], " \t\n");
-		j = 0;
+		ft_parse_redir_and_set_fd(cmds[i], &fds);
+		args = ft_parser_split(cmds[i], " \t");
+		j = -1;
 		while (args[++j] != NULL)
 			ft_remove_quotes_logic(args[j], ft_strlen(args[j]));
-		// ft_expand_sign_matrix(args, shell);
 		add_cmd(shell, args, &fds, ft_is_pipe(shell->line));
 		ft_free_args(args);
 		free(cmds[i]);
