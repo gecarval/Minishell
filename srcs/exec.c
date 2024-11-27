@@ -139,15 +139,15 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
-		workdone = ft_pwd(shell);
+		workdone = ft_pwd(cmd);
 	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
 		workdone = ft_export(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		workdone = ft_unset(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
-		workdone = ft_env(shell);
+		workdone = ft_env(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
-		workdone = ft_echo(cmd, shell);
+		workdone = ft_echo(cmd);
 	shell->status = workdone;
 	return (workdone);
 }
@@ -163,56 +163,76 @@ int	ft_exec_if_pipe(t_shell *shell)
 	t_cmd	*cmd;
 	pid_t	pid;
 
-	cmd = shell->cmd;
-	while (cmd != NULL)
-	{
-		if (cmd->next != NULL)
-			pipe(shell->pipe_fd);
-		pid = ft_fork(shell);
-		if (pid == 0)
-		{
-			if (cmd->next != NULL)
-				ft_dup2(shell->pipe_fd[1], shell->fd_out, shell, NULL);
-			close(shell->pipe_fd[0]);
-			if (ft_exec_on_builtin(cmd, shell) >= 0)
-			{
-				close(shell->pipe_fd[1]);
-				ft_free_all(shell);
-				exit(shell->status);
-			}
-			ft_exec_on_path(shell, cmd);
-			close(shell->pipe_fd[1]);
-			ft_free_all(shell);
-			exit(shell->status);
-		}
-		else
-		{
-			if (cmd->next != NULL)
-				ft_dup2(shell->pipe_fd[0], shell->fd_in, shell, NULL);
-			if (cmd->next != NULL)
-				close(shell->pipe_fd[1]);
-		}
-		cmd = cmd->next;
-	}
-	waitpid(pid, &shell->status, 0);
-	if (WIFEXITED(shell->status))
-		shell->status = WEXITSTATUS(shell->status);
-	else if (shell->status == 2)
-		shell->status = (shell->status << 6) + 2;
-	ft_free_all(shell);
-	return (shell->status);
+  cmd = shell->cmd;
+  while (cmd != NULL)
+  {
+    if (cmd->next != NULL)
+      pipe(shell->pipe_fd);
+    pid = ft_fork(shell);
+
+    if (pid == 0)
+    {
+      // OUTPUT FD
+      if (cmd->fd.fd_out == STDOUT_FILENO)
+      {
+        if (cmd->next != NULL)
+          ft_dup2(shell->pipe_fd[1], cmd->fd.fd_out, shell, NULL);
+      }
+      else
+        ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
+
+      // INPUT FD
+      if (cmd->fd.fd_in != STDIN_FILENO)
+        ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, NULL);
+      close(shell->pipe_fd[0]);
+
+      // EXEC ON BUILTIN
+      if (ft_exec_on_builtin(cmd, shell) >= 0)
+      {
+        close(shell->pipe_fd[1]);
+        ft_free_all(shell);
+        exit(shell->status);
+      }
+
+      // EXEC ON PATH IF NOT A BUILTIN
+      ft_exec_on_path(shell, cmd);
+      close(shell->pipe_fd[1]);
+      ft_free_all(shell);
+      exit(shell->status);
+    }
+
+    // CLOSE PIPE FD AND SET FOR NEXT CMD
+    if (cmd->fd.fd_in == 0)
+      ft_dup2(shell->pipe_fd[0], cmd->fd.fd_in, shell, NULL);
+    close(shell->pipe_fd[1]);
+    cmd = cmd->next;
+  }
+
+  // WAIT LAST PROCESS
+  waitpid(pid, &shell->status, 0);
+  if (WIFEXITED(shell->status))
+    shell->status = WEXITSTATUS(shell->status);
+  else if (shell->status == 2)
+    shell->status = (shell->status << 6) + 2;
+  ft_free_all(shell);
+  return (shell->status);
 }
 
 int	ft_normal_exec(t_cmd *cmd, t_shell *shell)
 {
-	if (ft_exec_on_builtin(cmd, shell) >= 0)
-	{
-		ft_free_all(shell);
-		exit(shell->status);
-	}
-	ft_exec_on_path(shell, cmd);
-	ft_free_all(shell);
-	return (shell->status);
+  printf("normal exec\n");
+  if (cmd->fd.fd_out != STDOUT_FILENO)
+    ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
+  if (cmd->fd.fd_in != STDIN_FILENO)
+    ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, NULL);
+  if (ft_exec_on_builtin(cmd, shell) >= 0)
+  {
+    ft_free_all(shell);
+    exit(shell->status);
+  }
+  ft_exec_on_path(shell, cmd);
+  ft_free_all(shell);
+  return (shell->status);
 }
 
 // This function executes the command in the parent process
@@ -223,24 +243,21 @@ void	exec_cmd(t_shell *shell)
 {
 	pid_t	pid;
 
-	if (shell->cmd->type == EXEC && ft_exec_on_parent(shell->cmd, shell) >= 0)
-		return ;
-	pid = ft_fork(shell);
-	if (pid == 0)
-	{
-		signal(SIGQUIT, SIG_DFL);
-		if (shell->cmd->type == PIPE)
-			exit(ft_exec_if_pipe(shell));
-		else
-			exit(ft_normal_exec(shell->cmd, shell));
-	}
-	else
-	{
-		signal(SIGINT, ft_signal_hand);
-		waitpid(pid, &shell->status, 0);
-		if (WIFEXITED(shell->status))
-			shell->status = WEXITSTATUS(shell->status);
-		else if (shell->status == 2)
-			shell->status = (shell->status << 6) + 2;
-	}
+  if (shell->cmd->type == EXEC && ft_exec_on_parent(shell->cmd, shell) >= 0)
+    return ;
+  pid = ft_fork(shell);
+  if (pid == 0)
+  {
+    signal(SIGQUIT, SIG_DFL);
+    if (shell->cmd->type == PIPE)
+      exit(ft_exec_if_pipe(shell));
+    else
+      exit(ft_normal_exec(shell->cmd, shell));
+  }
+  signal(SIGINT, ft_signal_hand);
+  waitpid(pid, &shell->status, 0);
+  if (WIFEXITED(shell->status))
+    shell->status = WEXITSTATUS(shell->status);
+  else if (shell->status == 2)
+    shell->status = (shell->status << 6) + 2;
 }

@@ -86,18 +86,18 @@ int	ft_cd(t_cmd *cmd, t_shell *shell)
 	return (0);
 }
 
-int	ft_pwd(t_shell *shell)
+int	ft_pwd(t_cmd *cmd)
 {
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
-	ft_putstr_fd(cwd, shell->fd_out);
-	ft_putstr_fd("\n", shell->fd_out);
+	ft_putstr_fd(cwd, cmd->fd.fd_out);
+	ft_putstr_fd("\n", cmd->fd.fd_out);
 	free(cwd);
 	return (0);
 }
 
-int	ft_echo(t_cmd *cmd, t_shell *shell)
+int	ft_echo(t_cmd *cmd)
 {
 	int	flag;
 	int	i;
@@ -113,11 +113,11 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 			continue ;
 		}
 		else
-			ft_putstr_fd(cmd->args[i], shell->fd_out);
+			ft_putstr_fd(cmd->args[i], cmd->fd.fd_out);
 		if (cmd->args[i + 1] != NULL)
-			ft_putstr_fd(" ", shell->fd_out);
+			ft_putstr_fd(" ", cmd->fd.fd_out);
 	}
 	if (flag == 0)
-		ft_putstr_fd("\n", shell->fd_out);
+		ft_putstr_fd("\n", cmd->fd.fd_out);
 	return (0);
 }

@@ -92,6 +92,7 @@ typedef struct s_shell
 	char			**envp;
 	int				status;
 	int				pipe_fd[2];
+	int				pipe_fd2[2];
 	int				fd_in;
 	int				fd_out;
 }					t_shell;
@@ -156,11 +157,11 @@ int					ft_invalid_key(char *str);
 // BUILTINS
 int					ft_exit(t_shell *shell);
 int					ft_cd(t_cmd *cmd, t_shell *shell);
-int					ft_pwd(t_shell *shell);
+int					ft_pwd(t_cmd *cmd);
 int					ft_export(t_cmd *cmd, t_shell *shell);
 int					ft_unset(t_cmd *cmd, t_shell *shell);
-int					ft_env(t_shell *shell);
-int					ft_echo(t_cmd *cmd, t_shell *shell);
+int					ft_env(t_cmd *cmd, t_shell *shell);
+int					ft_echo(t_cmd *cmd);
 
 // EXEC_UTILS
 pid_t				ft_fork(t_shell *shell);

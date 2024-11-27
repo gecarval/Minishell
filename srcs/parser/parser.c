@@ -32,19 +32,60 @@ void	ft_init_fd(t_fd *fds)
 	fds->filename_out = NULL;
 }
 
+void	ft_reset_fd_out(t_fd *fds)
+{
+	if (fds->fd_out != STDOUT_FILENO)
+	{
+		close(fds->fd_out);
+		fds->fd_out = STDOUT_FILENO;
+	}
+	if (fds->filename_out != NULL)
+	{
+		free(fds->filename_out);
+		fds->filename_out = NULL;
+	}
+}
+
+void	ft_reset_fd_in(t_fd *fds)
+{
+	if (fds->fd_heredoc == 1)
+		fds->fd_heredoc = 0;
+	if (fds->fd_in != STDIN_FILENO)
+	{
+		close(fds->fd_in);
+		fds->fd_in = STDIN_FILENO;
+	}
+	if (fds->filename_in != NULL)
+	{
+		free(fds->filename_in);
+		fds->filename_in = NULL;
+	}
+}
+
 void	ft_reset_fd(t_fd *fds)
 {
 	if (fds->fd_in != STDIN_FILENO)
+  {
 		close(fds->fd_in);
+    fds->fd_in = STDIN_FILENO;
+  }
 	if (fds->fd_out != STDOUT_FILENO)
+  {
 		close(fds->fd_out);
+    fds->fd_out = STDOUT_FILENO;
+  }
 	if (fds->fd_heredoc == 1)
 		fds->fd_heredoc = 0;
 	if (fds->filename_in != NULL)
+  {
 		free(fds->filename_in);
+    fds->filename_in = NULL;
+  }
 	if (fds->filename_out != NULL)
+  {
 		free(fds->filename_out);
-	ft_init_fd(fds);
+    fds->filename_out = NULL;
+  }
 }
 
 char	*ft_strchrstr(char *str, char *to_find)
@@ -64,38 +105,53 @@ char	*ft_strchrstr(char *str, char *to_find)
 	return (str + i);
 }
 
-char	*ft_strchr_dupfilename(char *line, int i)
+char	*ft_strchr_dupfilename(char *strline, int i)
 {
-	char	*filename;
-	int		j;
+  char    *line;
+  char	*filename;
+  int		j;
 
-	ft_remove_quotes_logic(line, ft_strlen(line));
-	if (line[i] == '\0')
-		return (NULL);
-	while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
-		i++;
-	if (line[i] == '\n' || line[i] == '\0' || line[i] == '>' || line[i] == '<'
-		|| line[i] == '|')
-		return (NULL);
-	j = i;
-	while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
-		j++;
-	filename = (char *)ft_calloc((j - i + 2), sizeof(char));
-	if (filename == NULL)
-		return (NULL);
-	j = 0;
-	while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
-		&& line[i] != '\n')
-	{
-		filename[j++] = line[i];
-		line[i++] = ' ';
-	}
-	return (filename);
+    line = ft_strdup(strline);
+    ft_remove_quotes_logic(line, ft_strlen(line));
+    if (line[i] == '\0')
+    {
+      if (line != NULL)
+        free(line);
+      return (NULL);
+    }
+    while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
+      i++;
+    if (line[i] == '\n' || line[i] == '\0' || line[i] == '>' || line[i] == '<'
+        || line[i] == '|')
+    {
+      if (line != NULL)
+        free(line);
+      return (NULL);
+    }
+    j = i;
+    while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
+      j++;
+    filename = (char *)ft_calloc((j - i + 2), sizeof(char));
+    if (filename == NULL)
+    {
+      if (line != NULL)
+        free(line);
+      return (NULL);
+    }
+    j = 0;
+    while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
+        && line[i] != '\n')
+    {
+      filename[j++] = line[i];
+      strline[i++] = ' ';
+    }
+    if (line != NULL)
+      free(line);
+    return (filename);
 }
 
 void	ft_open_file(char *line, int i, t_fd *fds)
 {
-	ft_init_fd(fds);
 	if (line[i] == '>')
 	{
 		line[i] = ' ';
@@ -132,36 +188,6 @@ void	ft_open_file(char *line, int i, t_fd *fds)
 	}
 }
 
-void	ft_reset_fd_out(t_fd *fds)
-{
-	if (fds->fd_out != STDOUT_FILENO)
-	{
-		close(fds->fd_out);
-		fds->fd_out = STDOUT_FILENO;
-	}
-	if (fds->filename_out != NULL)
-	{
-		free(fds->filename_out);
-		fds->filename_out = NULL;
-	}
-}
-
-void	ft_reset_fd_in(t_fd *fds)
-{
-	if (fds->fd_heredoc == 1)
-		fds->fd_heredoc = 0;
-	if (fds->fd_in != STDIN_FILENO)
-	{
-		close(fds->fd_in);
-		fds->fd_in = STDIN_FILENO;
-	}
-	if (fds->filename_in != NULL)
-	{
-		free(fds->filename_in);
-		fds->filename_in = NULL;
-	}
-}
-
 // verify the filename and if exits
 // open the file, the fd and sets the redir type
 void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
@@ -169,7 +195,6 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
 	int	i;
 
 	i = -1;
-	ft_init_fd(fds);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '>')
@@ -207,8 +232,8 @@ void	add_args_and_output(t_cmd *new, char **args, t_fd *fds)
 	new->args = ft_matdup(args);
 	new->fd.fd_in = fds->fd_in;
 	new->fd.fd_out = fds->fd_out;
-	new->fd.filename_in = fds->filename_in;
-	new->fd.filename_out = fds->filename_out;
+	new->fd.filename_in = ft_strdup(fds->filename_in);
+	new->fd.filename_out = ft_strdup(fds->filename_out);
 }
 
 // This function adds the command to the command structure List
@@ -262,8 +287,10 @@ void	parse_line(t_shell *shell)
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
 	cmds = ft_parser_split(shell->line, "|");
+  ft_init_fd(&fds);
 	while (cmds[i] != NULL)
 	{
+    ft_reset_fd(&fds);
 		ft_expand_sign_matrix(&cmds[i], shell);
 		ft_parse_redir_and_set_fd(cmds[i], &fds);
 		args = ft_parser_split(cmds[i], " \t");
