@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/18 11:30:41 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:03:00 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ft_export_print(t_cmd *cmd, t_shell *shell)
 	while (tmp != NULL)
 	{
 		ft_putstr_fd("declare -x ", cmd->fd.fd_out);
-          ft_putstr_fd(tmp->key, cmd->fd.fd_out);
+		ft_putstr_fd(tmp->key, cmd->fd.fd_out);
 		if (tmp->equal == 1)
 		{
 			ft_putstr_fd("=\"", cmd->fd.fd_out);

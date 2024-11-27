@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/15 15:36:39 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:26:26 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,13 @@ int	ft_is_pipe(char *line)
 {
 	int	i;
 
-	i = 0;
-	while (line[i])
+	i = -1;
+	while (line[++i])
 	{
-		if (line[i] == '|')
+		if (line[i] == '\"' || line[i] == '\'')
+			i = ft_skiptochr(line, i + 1, line[i]);
+		else if (line[i] == '|')
 			return (1);
-		i++;
 	}
 	return (0);
 }

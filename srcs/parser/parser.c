@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/21 16:39:22 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:21:01 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,27 +65,27 @@ void	ft_reset_fd_in(t_fd *fds)
 void	ft_reset_fd(t_fd *fds)
 {
 	if (fds->fd_in != STDIN_FILENO)
-  {
+	{
 		close(fds->fd_in);
-    fds->fd_in = STDIN_FILENO;
-  }
+		fds->fd_in = STDIN_FILENO;
+	}
 	if (fds->fd_out != STDOUT_FILENO)
-  {
+	{
 		close(fds->fd_out);
-    fds->fd_out = STDOUT_FILENO;
-  }
+		fds->fd_out = STDOUT_FILENO;
+	}
 	if (fds->fd_heredoc == 1)
 		fds->fd_heredoc = 0;
 	if (fds->filename_in != NULL)
-  {
+	{
 		free(fds->filename_in);
-    fds->filename_in = NULL;
-  }
+		fds->filename_in = NULL;
+	}
 	if (fds->filename_out != NULL)
-  {
+	{
 		free(fds->filename_out);
-    fds->filename_out = NULL;
-  }
+		fds->filename_out = NULL;
+	}
 }
 
 char	*ft_strchrstr(char *str, char *to_find)
@@ -107,47 +107,47 @@ char	*ft_strchrstr(char *str, char *to_find)
 
 char	*ft_strchr_dupfilename(char *strline, int i)
 {
-  char    *line;
-  char	*filename;
-  int		j;
+	char	*line;
+	char	*filename;
+	int		j;
 
-    line = ft_strdup(strline);
-    ft_remove_quotes_logic(line, ft_strlen(line));
-    if (line[i] == '\0')
-    {
-      if (line != NULL)
-        free(line);
-      return (NULL);
-    }
-    while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
-      i++;
-    if (line[i] == '\n' || line[i] == '\0' || line[i] == '>' || line[i] == '<'
-        || line[i] == '|')
-    {
-      if (line != NULL)
-        free(line);
-      return (NULL);
-    }
-    j = i;
-    while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
-      j++;
-    filename = (char *)ft_calloc((j - i + 2), sizeof(char));
-    if (filename == NULL)
-    {
-      if (line != NULL)
-        free(line);
-      return (NULL);
-    }
-    j = 0;
-    while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
-        && line[i] != '\n')
-    {
-      filename[j++] = line[i];
-      strline[i++] = ' ';
-    }
-    if (line != NULL)
-      free(line);
-    return (filename);
+	line = ft_strdup(strline);
+	if (line == NULL)
+		return (NULL);
+	ft_remove_quotes_logic_with_spaces(line, ft_strlen(line));
+	if (strline[i] == '\0')
+		free(line);
+	if (strline[i] == '\0')
+		return (NULL);
+	while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
+		i++;
+	if (line[i] == '\0' || line[i] == '\n' || line[i] == '>' || line[i] == '<'
+		|| line[i] == '|')
+	{
+		free(line);
+		return (NULL);
+	}
+	j = i;
+	while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
+		j++;
+	filename = (char *)ft_calloc((j - i + 2), sizeof(char));
+	if (filename == NULL)
+		free(line);
+	if (filename == NULL)
+		return (NULL);
+	j = 0;
+	if (strline[i - 1] == '\'' || strline[i - 1] == '\"')
+		strline[i - 1] = ' ';
+	while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
+		&& line[i] != '\n')
+	{
+		filename[j++] = line[i];
+		strline[i++] = ' ';
+	}
+	if (strline[i] == '\'' || strline[i] == '\"')
+		strline[i] = ' ';
+	free(line);
+	return (filename);
 }
 
 void	ft_open_file(char *line, int i, t_fd *fds)
@@ -195,6 +195,7 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
 	int	i;
 
 	i = -1;
+	ft_reset_fd(fds);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '>')
@@ -287,10 +288,9 @@ void	parse_line(t_shell *shell)
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
 	cmds = ft_parser_split(shell->line, "|");
-  ft_init_fd(&fds);
+	ft_init_fd(&fds);
 	while (cmds[i] != NULL)
 	{
-    ft_reset_fd(&fds);
 		ft_expand_sign_matrix(&cmds[i], shell);
 		ft_parse_redir_and_set_fd(cmds[i], &fds);
 		args = ft_parser_split(cmds[i], " \t");

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/21 16:01:23 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:28:20 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ void				ft_free_all(t_shell *shell);
 void				ft_free_envp_list(t_env *env);
 
 // INIT
+void				ft_default_fd(t_shell *shell);
+void				ft_signal_handler(int signum);
 void				ft_init_shell(t_shell *shell, char **envp);
 
 // UTILS
@@ -118,6 +120,7 @@ int					ft_skiptochr(char *line, int i, char chr);
 
 // PARSER_UTILS
 void				ft_handle_ispipe(t_cmd *new, int is_pipe);
+void				ft_remove_quotes_logic_with_spaces(char *str, int len);
 char				*ft_limit_buffer(char *line);
 char				*ft_remove_quotes(char *str, int len);
 char				**ft_parser_split(char *line, char *delim);
@@ -164,7 +167,18 @@ int					ft_env(t_cmd *cmd, t_shell *shell);
 int					ft_echo(t_cmd *cmd);
 
 // EXEC_UTILS
+void				ft_execve(char *bin, char **args, char **env,
+						t_shell *shell);
+void				ft_dup2(int fd, int fd2, t_shell *shell, char *bin_route);
+void				ft_signal_hand(int signum);
 pid_t				ft_fork(t_shell *shell);
+
+// EXEC_BINS
+void				ft_exec_on_path(t_shell *shell, t_cmd *cmd);
+char				*ft_get_bin_based_on_path(char *bin_route, t_shell *shell,
+						t_cmd *cmd);
+int					ft_exec_on_builtin(t_cmd *cmd, t_shell *shell);
+int					ft_exec_on_parent(t_cmd *cmd, t_shell *shell);
 
 // EXEC
 void				exec_cmd(t_shell *shell);

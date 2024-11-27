@@ -6,11 +6,38 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 16:31:58 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/27 16:01:39 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+// remove the quotes from the string in bash logic
+void	ft_remove_quotes_logic_with_spaces(char *str, int len)
+{
+	int	i;
+	int	block_flag[2];
+
+	i = 0;
+	block_flag[0] = 0;
+	block_flag[1] = 0;
+	while (str != NULL && str[i] != '\0' && i < len)
+	{
+		if (str[i] == '\"' && block_flag[1] == 0)
+		{
+			str[i] = ' ';
+			ft_switch_flags(block_flag);
+			i++;
+		}
+		else if (str[i] == '\'' && block_flag[0] == 0)
+		{
+			str[i] = ' ';
+			ft_switch_flags(block_flag + 1);
+			i++;
+		}
+		i++;
+	}
+}
 
 // remove the quotes from the string in bash logic
 void	ft_remove_quotes_logic(char *str, int len)
