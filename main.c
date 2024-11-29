@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/10/29 13:16:16 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:52:48 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,17 @@ void	ft_print_cmd(t_cmd *cmd)
 			i++;
 		}
 		printf("argc: %d\n", tmp->argc);
-		if (tmp->str_to_print != NULL)
-			printf("str_to_print: %s\n", tmp->str_to_print);
 		printf("type: %d\n", tmp->type);
-		printf("fd_in: %d\n", tmp->fd_in);
-		printf("fd_out: %d\n", tmp->fd_out);
+		printf("fd_in: %d\n", tmp->fd.fd_in);
+		printf("fd_out: %d\n", tmp->fd.fd_out);
+		if (tmp->fd.filename_in != NULL)
+			printf("filename_in: %s\n", tmp->fd.filename_in);
+		else
+			printf("filename_in: %s\n", "(null)");
+		if (tmp->fd.filename_out != NULL)
+			printf("filename_out: %s\n", tmp->fd.filename_out);
+		else
+			printf("filename_out: %s\n", "(null)");
 		tmp = tmp->next;
 	}
 }
@@ -43,23 +49,27 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	shell.envp = envp;
-	shell.line = NULL;
-	shell.cmd = NULL;
+	signal(SIGQUIT, SIG_IGN);
+	ft_init_shell(&shell, envp);
 	while (1)
 	{
+		signal(SIGINT, ft_signal_handler);
 		shell.line = ft_limit_buffer(readline(PROMPT));
-		if (!shell.line)
+		if (shell.line == NULL)
+			write(1, "exit\n", 5);
+		if (shell.line == NULL)
 			break ;
-		else if (*shell.line)
+		if (shell.line[0] != '\0')
+		{
 			add_history(shell.line);
-		parse_line(&shell);
-		ft_print_cmd(shell.cmd);
-		exec_cmd(&shell);
-		if (shell.cmd != NULL)
+			parse_line(&shell);
+			ft_print_cmd(shell.cmd);
+			exec_cmd(&shell);
 			free_cmd(&shell.cmd);
-		if (shell.line != NULL)
-			free(shell.line);
+			if (shell.line != NULL)
+				free(shell.line);
+		}
 	}
+	ft_free_all(&shell);
 	return (0);
 }

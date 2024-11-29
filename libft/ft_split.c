@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/05/20 13:17:10 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/13 10:15:58 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	tab = (char **)malloc(sizeof(char *) * (ft_nb_words(s, c) + 1));
+	tab = (char **)ft_calloc((ft_nb_words(s, c) + 2), sizeof(char *));
 	if (!tab)
 		return (NULL);
 	i = 0;
@@ -89,7 +89,7 @@ char	**ft_split(char const *s, char c)
 	while (i < ft_nb_words(s, c))
 	{
 		ft_get_next_word(&next_word, &next_word_len, c);
-		tab[i] = (char *)malloc(sizeof(char) * (next_word_len + 1));
+		tab[i] = (char *)ft_calloc((next_word_len + 2), sizeof(char));
 		if (!tab[i])
 			return (ft_malloc_error(tab));
 		ft_strlcpy(tab[i], next_word, next_word_len + 1);

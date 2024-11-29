@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/06/13 12:47:06 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:15:59 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_putstr_fd(char *s, int fd)
 
 	i = 0;
 	if (!s)
-		write(fd, "(NULL)", 6);
+		return ;
 	else
 	{
 		while (s[i])
