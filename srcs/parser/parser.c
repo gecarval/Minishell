@@ -191,7 +191,6 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
 	int	i;
 
 	i = -1;
-	ft_reset_fd(fds);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '>')
@@ -284,9 +283,9 @@ void	parse_line(t_shell *shell)
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
 	cmds = ft_parser_split(shell->line, "|");
-	ft_init_fd(&fds);
 	while (cmds[i] != NULL)
 	{
+	  ft_init_fd(&fds);
 		ft_expand_sign_matrix(&cmds[i], shell);
 		ft_parse_redir_and_set_fd(cmds[i], &fds);
 		args = ft_parser_split(cmds[i], " \t");

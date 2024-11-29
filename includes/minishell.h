@@ -156,10 +156,10 @@ int					ft_invalid_key(char *str);
 // BUILTINS
 int					ft_exit(t_shell *shell);
 int					ft_cd(t_cmd *cmd, t_shell *shell);
-int					ft_pwd(t_cmd *cmd);
+int					ft_pwd(void);
 int					ft_export(t_cmd *cmd, t_shell *shell);
 int					ft_unset(t_cmd *cmd, t_shell *shell);
-int					ft_env(t_cmd *cmd, t_shell *shell);
+int					ft_env(t_shell *shell);
 int					ft_echo(t_cmd *cmd);
 
 // EXEC_UTILS

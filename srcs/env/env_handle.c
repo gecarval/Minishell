@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	ft_export_print(t_cmd *cmd, t_shell *shell)
+int	ft_export_print(t_shell *shell)
 {
 	t_env	*tmp;
 	t_env	*new;
@@ -22,16 +22,16 @@ int	ft_export_print(t_cmd *cmd, t_shell *shell)
 	tmp = new;
 	while (tmp != NULL)
 	{
-		ft_putstr_fd("declare -x ", cmd->fd.fd_out);
-		ft_putstr_fd(tmp->key, cmd->fd.fd_out);
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putstr_fd(tmp->key, STDOUT_FILENO);
 		if (tmp->equal == 1)
 		{
-			ft_putstr_fd("=\"", cmd->fd.fd_out);
-			ft_putstr_fd(tmp->value, cmd->fd.fd_out);
-			ft_putstr_fd("\"\n", cmd->fd.fd_out);
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(tmp->value, STDOUT_FILENO);
+			ft_putstr_fd("\"\n", STDOUT_FILENO);
 		}
 		else
-			ft_putstr_fd("\n", cmd->fd.fd_out);
+			ft_putstr_fd("\n", STDOUT_FILENO);
 		tmp = tmp->next;
 	}
 	ft_free_envp_list(new);
@@ -44,7 +44,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 
 	i = 0;
 	if (cmd->argc == 1)
-		return (ft_export_print(cmd, shell));
+		return (ft_export_print(shell));
 	while (cmd->args[++i] != NULL)
 	{
 		if (ft_invalid_key(cmd->args[i]) == 1)
@@ -105,7 +105,7 @@ int	ft_unset(t_cmd *cmd, t_shell *shell)
 	return (0);
 }
 
-int	ft_env(t_cmd *cmd, t_shell *shell)
+int	ft_env(t_shell *shell)
 {
 	t_env	*tmp;
 
@@ -114,10 +114,10 @@ int	ft_env(t_cmd *cmd, t_shell *shell)
 	{
 		if (tmp->equal == 1)
 		{
-			ft_putstr_fd(tmp->key, cmd->fd.fd_out);
-			ft_putstr_fd("=", cmd->fd.fd_out);
-			ft_putstr_fd(tmp->value, cmd->fd.fd_out);
-			ft_putstr_fd("\n", cmd->fd.fd_out);
+			ft_putstr_fd(tmp->key, STDOUT_FILENO);
+			ft_putstr_fd("=", STDOUT_FILENO);
+			ft_putstr_fd(tmp->value, STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
 		tmp = tmp->next;
 	}

@@ -96,13 +96,13 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
-		workdone = ft_pwd(cmd);
+		workdone = ft_pwd();
 	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
 		workdone = ft_export(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		workdone = ft_unset(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
-		workdone = ft_env(cmd, shell);
+		workdone = ft_env(shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
 		workdone = ft_echo(cmd);
 	shell->status = workdone;
