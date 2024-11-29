@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:28:20 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:53:38 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,6 @@ typedef struct s_shell
 	char			**envp;
 	int				status;
 	int				pipe_fd[2];
-	int				pipe_fd2[2];
-	int				fd_in;
-	int				fd_out;
 }					t_shell;
 
 // MALLOC
@@ -108,7 +105,6 @@ void				ft_free_all(t_shell *shell);
 void				ft_free_envp_list(t_env *env);
 
 // INIT
-void				ft_default_fd(t_shell *shell);
 void				ft_signal_handler(int signum);
 void				ft_init_shell(t_shell *shell, char **envp);
 

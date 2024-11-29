@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:39:07 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:52:48 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ int	main(int argc, char **argv, char **envp)
 			free_cmd(&shell.cmd);
 			if (shell.line != NULL)
 				free(shell.line);
-			ft_default_fd(&shell);
 		}
 	}
 	ft_free_all(&shell);

@@ -6,20 +6,18 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:37:45 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:10:18 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	ft_exec_if_pipe(t_shell *shell)
+int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 {
-	t_cmd	*cmd;
 	pid_t	pid;
 
 	printf("pipe exec\n");
 	signal(SIGINT, ft_signal_hand);
-	cmd = shell->cmd;
 	while (cmd != NULL)
 	{
 		if (cmd->next != NULL)
@@ -28,13 +26,11 @@ int	ft_exec_if_pipe(t_shell *shell)
 		if (pid == 0)
 		{
 			// OUTPUT FD
-			if (cmd->next != NULL)
-				ft_dup2(shell->pipe_fd[1], STDOUT_FILENO, shell, NULL);
 			if (cmd->fd.fd_out != STDOUT_FILENO)
-				ft_dup2(cmd->fd.fd_out, shell->pipe_fd[1], shell, NULL);
-			// INPUT FD
-			if (cmd->fd.fd_in != STDIN_FILENO)
-				ft_dup2(cmd->fd.fd_in, shell->pipe_fd[0], shell, NULL);
+				ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
+			else if (cmd->next != NULL)
+				ft_dup2(shell->pipe_fd[1], STDOUT_FILENO, shell, NULL);
+			// SET INPUT FD AND CLOSE INPUT PIPE FD
 			if (cmd->next != NULL)
 				close(shell->pipe_fd[0]);
 			// EXEC ON BUILTIN
@@ -52,11 +48,16 @@ int	ft_exec_if_pipe(t_shell *shell)
 			ft_free_all(shell);
 			exit(shell->status);
 		}
+		// INPUT FD
+		if (cmd->next != NULL && cmd->next->fd.fd_in != STDIN_FILENO)
+			ft_dup2(cmd->next->fd.fd_in, STDIN_FILENO, shell, NULL);
+		else if (cmd->next != NULL)
+			ft_dup2(shell->pipe_fd[0], STDIN_FILENO, shell, NULL);
 		// CLOSE PIPE FD AND SET FOR NEXT CMD
 		if (cmd->next != NULL)
-			ft_dup2(shell->pipe_fd[0], STDIN_FILENO, shell, NULL);
-		if (cmd->next != NULL)
 			close(shell->pipe_fd[1]);
+		if (cmd->next != NULL)
+			close(shell->pipe_fd[0]);
 		cmd = cmd->next;
 	}
 	// WAIT LAST PROCESS
@@ -101,7 +102,7 @@ void	exec_cmd(t_shell *shell)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		if (shell->cmd->type == PIPE)
-			exit(ft_exec_if_pipe(shell));
+			exit(ft_exec_if_pipe(shell->cmd, shell));
 		else
 			exit(ft_normal_exec(shell->cmd, shell));
 	}

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:21:01 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 08:45:15 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,48 +105,44 @@ char	*ft_strchrstr(char *str, char *to_find)
 	return (str + i);
 }
 
-char	*ft_strchr_dupfilename(char *strline, int i)
+char	*ft_strchr_dupfilename(char *line, int i)
 {
-	char	*line;
 	char	*filename;
+	int		quote;
 	int		j;
 
-	line = ft_strdup(strline);
-	if (line == NULL)
-		return (NULL);
-	ft_remove_quotes_logic_with_spaces(line, ft_strlen(line));
-	if (strline[i] == '\0')
-		free(line);
-	if (strline[i] == '\0')
+	quote = 0;
+	if (line == NULL || line[i] == '\0')
 		return (NULL);
 	while (line[i] != '\0' && (line[i] == ' ' || line[i] == '\t'))
-		i++;
+		line[i++] = ' ';
 	if (line[i] == '\0' || line[i] == '\n' || line[i] == '>' || line[i] == '<'
 		|| line[i] == '|')
-	{
-		free(line);
 		return (NULL);
-	}
+	if (line[i] == '\'' || line[i] == '\"')
+		quote = line[i];
+	if (line[i] == '\'' || line[i] == '\"')
+		line[i++] = ' ';
 	j = i;
-	while (line[j] != '\0' && (line[j] != ' ' || line[i] == '\t'))
-		j++;
-	filename = (char *)ft_calloc((j - i + 2), sizeof(char));
-	if (filename == NULL)
-		free(line);
+	if (quote > 0)
+		while (line[j] != '\0' && line[j] != quote)
+			j++;
+	else
+		while (line[j] != '\0' && line[j] != ' ' && line[j] != '\t'
+			&& line[j] != '\n')
+			j++;
+	filename = (char *)ft_calloc((j - i + 1), sizeof(char));
 	if (filename == NULL)
 		return (NULL);
-	j = 0;
-	if (strline[i - 1] == '\'' || strline[i - 1] == '\"')
-		strline[i - 1] = ' ';
-	while (line[i] != '\0' && line[i] != ' ' && line[i] != '\t'
-		&& line[i] != '\n')
+	j -= i;
+	quote = 0;
+	while (line[i] != '\0' && quote < j)
 	{
-		filename[j++] = line[i];
-		strline[i++] = ' ';
+		filename[quote++] = line[i];
+		line[i++] = ' ';
 	}
-	if (strline[i] == '\'' || strline[i] == '\"')
-		strline[i] = ' ';
-	free(line);
+	if (line[i] == '\'' || line[i] == '\"')
+		line[i] = ' ';
 	return (filename);
 }
 
