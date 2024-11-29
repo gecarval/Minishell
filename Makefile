@@ -13,6 +13,8 @@
 # VARIABLES
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
+SRCS = main.c ./srcs/free_handler.c ./srcs/parser_utils.c ./srcs/free_handler.c ./srcs/parser.c ./srcs/exec.c
+OBJS = $(SRCS:.c=.o)
 NAME = minishell
 SRCS =	main.c								\
 		./srcs/free_handler.c				\

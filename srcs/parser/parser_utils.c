@@ -12,10 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-// This function limits the buffer size of the line
-// It returns NULL if the line is NULL
-// It returns NULL and prints a error message if the line is too long
-// Because some shells have a limit of characters in a command
 char	*ft_limit_buffer(char *line)
 {
 	int	i;
@@ -52,7 +48,6 @@ char	*ft_remove_quotes(char *str, int len)
 	return (str);
 }
 
-// This function checks if the line has a pipe
 int	ft_is_pipe(char *line)
 {
 	int	i;
