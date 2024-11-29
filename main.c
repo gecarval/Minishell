@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/29 08:52:48 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/11/29 16:31:48 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,9 @@ void	ft_print_cmd(t_cmd *cmd)
 	while (tmp != NULL)
 	{
 		printf("cmd: %s\n", tmp->cmd);
-		i = 0;
-		while (tmp->args[i] != NULL)
-		{
+		i = -1;
+		while (tmp->args[++i] != NULL)
 			printf("arg[%d]: %s\n", i, tmp->args[i]);
-			i++;
-		}
 		printf("argc: %d\n", tmp->argc);
 		printf("type: %d\n", tmp->type);
 		printf("fd_in: %d\n", tmp->fd.fd_in);
@@ -60,15 +57,13 @@ int	main(int argc, char **argv, char **envp)
 		if (shell.line == NULL)
 			break ;
 		if (shell.line[0] != '\0')
-		{
-			add_history(shell.line);
-			parse_line(&shell);
-			ft_print_cmd(shell.cmd);
-			exec_cmd(&shell);
-			free_cmd(&shell.cmd);
-			if (shell.line != NULL)
-				free(shell.line);
-		}
+			continue ;
+		add_history(shell.line);
+		parse_line(&shell);
+		exec_cmd(&shell);
+		free_cmd(&shell.cmd);
+		if (shell.line != NULL)
+			free(shell.line);
 	}
 	ft_free_all(&shell);
 	return (0);
