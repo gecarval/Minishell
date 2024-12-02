@@ -61,7 +61,6 @@ int	ft_get_nameindex(char *line, int *quote, int *i, int *j)
 		while (line[*j] != '\0' && line[*j] != ' ' && line[*j] != '\t'
 			&& line[*j] != '\n')
 			(*j)++;
-	*j -= *i;
 	return (0);
 }
 
@@ -75,9 +74,10 @@ char	*ft_strchr_dupfilename(char *line, int i)
 	quote = 0;
 	if (ft_get_nameindex(line, &quote, &i, &j) != 0)
 		return (NULL);
-	filename = (char *)ft_calloc((j + 1), sizeof(char));
+	filename = (char *)ft_calloc((j - i + 1), sizeof(char));
 	if (filename == NULL)
 		return (NULL);
+	j -= i;
 	quote = 0;
 	while (line[i] != '\0' && quote < j)
 	{

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 09:27:14 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:45:06 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char				*ft_limit_buffer(char *line);
 // FREE
 void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
-void				ft_free_all(t_shell *shell);
+int					ft_free_all(t_shell *shell);
 void				ft_free_envp_list(t_env *env);
 
 // INIT

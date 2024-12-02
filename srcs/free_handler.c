@@ -6,14 +6,14 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/21 15:51:15 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:44:35 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 // Just some free functions I think there is no need to explain
-void	ft_free_all(t_shell *shell)
+int	ft_free_all(t_shell *shell)
 {
 	if (shell->envp != NULL)
 		ft_free_args(shell->envp);
@@ -23,6 +23,7 @@ void	ft_free_all(t_shell *shell)
 		free(shell->line);
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);
+	return (1);
 }
 
 void	ft_free_envp_list(t_env *env)

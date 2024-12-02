@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 09:03:18 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:58:00 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ void	exec_cmd(t_shell *shell)
 {
 	pid_t	pid;
 
+	if (shell->cmd->cmd == NULL)
+		return ;
 	if (shell->cmd->type == EXEC && ft_exec_on_parent(shell->cmd, shell) >= 0)
 		return ;
 	pid = ft_fork(shell);

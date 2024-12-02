@@ -56,8 +56,8 @@ void	add_args_and_output(t_cmd *new, char **args, t_fd *fds)
 	new->args = ft_matdup(args);
 	new->fd.fd_in = fds->fd_in;
 	new->fd.fd_out = fds->fd_out;
-	new->fd.filename_in = ft_strdup(fds->filename_in);
-	new->fd.filename_out = ft_strdup(fds->filename_out);
+	new->fd.filename_in = fds->filename_in;
+	new->fd.filename_out = fds->filename_out;
 }
 
 // This function adds the command to the command structure List

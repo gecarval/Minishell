@@ -50,6 +50,7 @@ void	ft_generate_newlevel(t_shell *shell)
 // This initializes the shell data struct
 void	ft_init_shell(t_shell *shell, char **envp)
 {
+	signal(SIGQUIT, SIG_IGN);
 	shell->envp_list = ft_get_envp_list(envp);
 	shell->envp = ft_matdup(envp);
 	envp = shell->envp;
