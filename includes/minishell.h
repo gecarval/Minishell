@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/29 08:53:38 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 09:27:14 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,6 @@
 # endif
 
 // STRUCTS
-
-// This structure is used to store the command structure in a List
-// It contains the command
-// The arguments and number of arguments
-// The type of command (pipe or just exec)
-// The input file descriptor and output file descriptor
-// The string to print and the next command
 typedef struct s_fd
 {
 	int				fd_in;
@@ -62,6 +55,20 @@ typedef struct s_fd
 	char			*filename_out;
 }					t_fd;
 
+typedef struct s_env
+{
+	char			*key;
+	int				equal;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
+
+// This structure is used to store the command structure in a List
+// It contains the command
+// The arguments and number of arguments
+// The type of command (pipe or just exec)
+// The input file descriptor and output file descriptor
+// The string to print and the next command
 typedef struct s_cmd
 {
 	char			*cmd;
@@ -71,14 +78,6 @@ typedef struct s_cmd
 	t_fd			fd;
 	struct s_cmd	*next;
 }					t_cmd;
-
-typedef struct s_env
-{
-	char			*key;
-	int				equal;
-	char			*value;
-	struct s_env	*next;
-}					t_env;
 
 // This structure is used to store the shell data
 // It contains the command structure List
@@ -128,6 +127,21 @@ void				add_args_and_output(t_cmd *new, char **args, t_fd *fds);
 void				add_cmd(t_shell *shell, char **args, t_fd *fds,
 						int is_pipe);
 void				parse_line(t_shell *shell);
+
+// REDIR_FD_UTILS
+void				ft_init_fd(t_fd *fds);
+void				ft_reset_fd_out(t_fd *fds);
+void				ft_reset_fd_in(t_fd *fds);
+void				ft_reset_fd(t_fd *fds);
+
+// REDIR_UTILS
+int					ft_strlen_meta(char *str);
+char				*ft_strchrstr(char *str, char *to_find);
+char				*ft_strchr_dupfilename(char *line, int i);
+
+// REDIR
+void				ft_open_file(char *line, int i, t_fd *fds);
+void				ft_parse_redir_and_set_fd(char *line, t_fd *fds);
 
 // EXPAND
 void				ft_switch_flags(int *block_flag);

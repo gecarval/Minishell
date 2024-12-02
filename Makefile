@@ -21,6 +21,9 @@ SRCS =	main.c								\
 		./srcs/parser/parser_utils.c		\
 		./srcs/parser/parser.c				\
 		./srcs/parser/ft_parser_split.c		\
+		./srcs/parser/redir/redir_utils.c		\
+		./srcs/parser/redir/redir_handler.c		\
+		./srcs/parser/redir/redir_fd_utils.c		\
 		./srcs/exec/exec.c					\
 		./srcs/exec/exec_bins.c				\
 		./srcs/exec/exec_utils.c			\

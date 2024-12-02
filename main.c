@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/29 16:31:48 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 09:03:22 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main(int argc, char **argv, char **envp)
 			write(1, "exit\n", 5);
 		if (shell.line == NULL)
 			break ;
-		if (shell.line[0] != '\0')
+		if (shell.line[0] == '\0')
 			continue ;
 		add_history(shell.line);
 		parse_line(&shell);

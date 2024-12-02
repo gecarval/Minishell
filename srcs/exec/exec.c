@@ -6,13 +6,13 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/29 16:30:14 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/02 09:03:18 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	ft_pipe_child(t_cmd *cmd, t_shell *shell)
+static void	ft_child_pipe(t_cmd *cmd, t_shell *shell)
 {
 	signal(SIGQUIT, SIG_DFL);
 	if (cmd->fd.fd_out != STDOUT_FILENO)
@@ -51,7 +51,6 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 {
 	pid_t	pid;
 
-	printf("pipe exec\n");
 	signal(SIGINT, ft_signal_hand);
 	while (cmd != NULL)
 	{
@@ -59,22 +58,22 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 			pipe(shell->pipe_fd);
 		pid = ft_fork(shell);
 		if (pid == 0)
-			ft_pipe_child(cmd, shell);
+			ft_child_pipe(cmd, shell);
 		ft_parent_pipe(cmd, shell);
 		cmd = cmd->next;
 	}
 	waitpid(pid, &shell->status, 0);
-	if (WIFEXITED(shell->status))
+	if (WIFEXITED(shell->status) == true)
 		shell->status = WEXITSTATUS(shell->status);
-	else if (shell->status == 2)
-		shell->status = (shell->status << 6) + 2;
+	else if (WIFSIGNALED(shell->status) == true)
+		shell->status = 128 + WTERMSIG(shell->status);
+	wait(NULL);
 	ft_free_all(shell);
 	return (shell->status);
 }
 
 int	ft_normal_exec(t_cmd *cmd, t_shell *shell)
 {
-	printf("normal exec\n");
 	signal(SIGQUIT, SIG_DFL);
 	if (cmd->fd.fd_out != STDOUT_FILENO)
 		ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
@@ -110,8 +109,8 @@ void	exec_cmd(t_shell *shell)
 	}
 	signal(SIGINT, ft_signal_hand);
 	waitpid(pid, &shell->status, 0);
-	if (WIFEXITED(shell->status))
+	if (WIFEXITED(shell->status) == true)
 		shell->status = WEXITSTATUS(shell->status);
-	else if (shell->status == 2)
-		shell->status = (shell->status << 6) + 2;
+	else if (WIFSIGNALED(shell->status) == true)
+		shell->status = 128 + WTERMSIG(shell->status);
 }
