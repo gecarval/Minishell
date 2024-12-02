@@ -63,6 +63,53 @@ int	ft_is_pipe(char *line)
 	return (0);
 }
 
+int ft_check_unexpected(char *line)
+{
+  int quotes;
+  int token;
+  int i;
+
+  i = 0;
+  quotes = -1;
+  token = -1;
+  while (line[i] != '\0')
+  {
+    if (line[i] == '\"' || line[i] == '\'')
+    {
+      token = -1;
+      quotes *= -1;
+    }
+    else if (line[i] == '|' && quotes == -1)
+    {
+      if (token == 1)
+        return (1);
+      token *= -1;
+    }
+    else if (line[i] == '>' && quotes == -1)
+    {
+      if (token == 1)
+        return (1);
+      if (line[i + 1] == '>')
+        i++;
+      token *= -1;
+    }
+    else if (line[i] == '<' && quotes == -1)
+    {
+      if (token == 1)
+        return (1);
+      if (line[i + 1] == '<')
+        i++;
+      token *= -1;
+    }
+    else if ((line[i] != '|' && line[i] != '<' && line[i] != '>') && (line[i] != ' ' && line[i] != '\t'))
+      token = -1;
+    i++;
+  }
+  if (token == 1)
+    return (1);
+  return (0);
+}
+
 // This function checks if the line has unclosed quotes
 int	ft_check_unvalid(char *line)
 {
@@ -73,6 +120,13 @@ int	ft_check_unvalid(char *line)
 	i = 0;
 	dquotes = 0;
 	squotes = 0;
+  if (line == NULL)
+    return (1);
+  if (ft_check_unexpected(line) == 1)
+  {
+    ft_putendl_fd("minishell: syntax error (unexpected token)", 2);
+    return (1);
+  }
 	while (line[i])
 	{
 		if (line[i] == '\"' && squotes % 2 == 0)

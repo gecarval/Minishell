@@ -23,6 +23,8 @@ int	ft_free_all(t_shell *shell)
 		free(shell->line);
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);
+  close(shell->pipe_fd[0]);
+  close(shell->pipe_fd[1]);
 	return (1);
 }
 

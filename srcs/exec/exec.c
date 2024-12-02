@@ -97,7 +97,7 @@ void	exec_cmd(t_shell *shell)
 {
 	pid_t	pid;
 
-	if (shell->cmd->cmd == NULL)
+	if (shell->cmd == NULL || shell->cmd->cmd == NULL)
 		return ;
 	if (shell->cmd->type == EXEC && ft_exec_on_parent(shell->cmd, shell) >= 0)
 		return ;
