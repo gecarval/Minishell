@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:53:16 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 16:31:23 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/06 08:36:48 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,32 +29,6 @@ char	**ft_matdup(char **mat)
 		new[i] = ft_strdup(mat[i]);
 	new[i] = NULL;
 	return (new);
-}
-
-// This function expands the sign $ in the matrix
-// It returns if the matrix is NULL
-// It iterates over the matrix
-// It iterates over the string in the matrix
-// It calls the ft_deal_with_quotes function to expand the sign
-// It calls the ft_remove_quotes_logic function in bash logic
-void	ft_expand_sign_matrix(char **matrix, t_shell *shell)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	if (matrix == NULL)
-		return ;
-	while (matrix[i] != NULL)
-	{
-		j = 0;
-		while (matrix[i][j] != '\0')
-		{
-			ft_deal_with_quotes(matrix, i, j, shell);
-			j++;
-		}
-		i++;
-	}
 }
 
 // This function splits the line by the delimiter

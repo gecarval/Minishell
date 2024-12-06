@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 09:25:58 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:34:52 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // verify the filename and if exits
 // open the file, the fd and sets the redir type
-void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
+void	ft_parse_redir_and_set_fd(char *line, t_fd *fds, t_shell *shell)
 {
 	int	i;
 
@@ -24,14 +24,14 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds)
 		if (line[i] == '>')
 		{
 			ft_reset_fd_out(fds);
-			ft_open_file(line, i, fds);
+			ft_open_file(line, i, fds, shell);
 			if (line[i + 1] == '>')
 				i++;
 		}
 		else if (line[i] == '<')
 		{
 			ft_reset_fd_in(fds);
-			ft_open_file(line, i, fds);
+			ft_open_file(line, i, fds, shell);
 			if (line[i + 1] == '<')
 				i++;
 		}
@@ -114,8 +114,8 @@ void	parse_line(t_shell *shell)
 	while (cmds[i] != NULL)
 	{
 		ft_init_fd(&fds);
-		ft_expand_sign_matrix(&cmds[i], shell);
-		ft_parse_redir_and_set_fd(cmds[i], &fds);
+		ft_parse_redir_and_set_fd(cmds[i], &fds, shell);
+		ft_expand_sign_matrix(&cmds[i], shell, 0);
 		args = ft_parser_split(cmds[i], " \t");
 		j = -1;
 		while (args[++j] != NULL)

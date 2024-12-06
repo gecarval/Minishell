@@ -6,35 +6,36 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:01:39 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:34:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// remove the quotes from the string in bash logic
-void	ft_remove_quotes_logic_with_spaces(char *str, int len)
+// This function expands the sign $ in the matrix
+// It returns if the matrix is NULL
+// It iterates over the matrix
+// It iterates over the string in the matrix
+// It calls the ft_deal_with_quotes function to expand the sign
+// It calls the ft_remove_quotes_logic function in bash logic
+void	ft_expand_sign_matrix(char **matrix, t_shell *shell, int oneliner)
 {
 	int	i;
-	int	block_flag[2];
+	int	j;
 
 	i = 0;
-	block_flag[0] = 0;
-	block_flag[1] = 0;
-	while (str != NULL && str[i] != '\0' && i < len)
+	if (matrix == NULL || *matrix == NULL || **matrix == '\0')
+		return ;
+	while (matrix[i] != NULL)
 	{
-		if (str[i] == '\"' && block_flag[1] == 0)
+		j = 0;
+		while (matrix[i][j] != '\0')
 		{
-			str[i] = ' ';
-			ft_switch_flags(block_flag);
-			i++;
+			ft_deal_with_quotes(matrix, i, j, shell);
+			j++;
 		}
-		else if (str[i] == '\'' && block_flag[0] == 0)
-		{
-			str[i] = ' ';
-			ft_switch_flags(block_flag + 1);
-			i++;
-		}
+		if (oneliner == 1)
+			break ;
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 11:45:06 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:34:43 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,7 @@ int					ft_skiptochr(char *line, int i, char chr);
 
 // PARSER_UTILS
 void				ft_handle_ispipe(t_cmd *new, int is_pipe);
-void				ft_remove_quotes_logic_with_spaces(char *str, int len);
 char				*ft_limit_buffer(char *line);
-char				*ft_remove_quotes(char *str, int len);
 char				**ft_parser_split(char *line, char *delim);
 int					ft_is_pipe(char *line);
 int					ft_check_unvalid(char *line);
@@ -134,18 +132,23 @@ void				ft_reset_fd_out(t_fd *fds);
 void				ft_reset_fd_in(t_fd *fds);
 void				ft_reset_fd(t_fd *fds);
 
+// REDIR HEREDOC
+void				ft_heredoc_handler(t_fd *fds, t_shell *shell);
+
 // REDIR_UTILS
 int					ft_strlen_meta(char *str);
 char				*ft_strchrstr(char *str, char *to_find);
-char				*ft_strchr_dupfilename(char *line, int i);
+char				*ft_strchr_dupfilename(char *line, int i, t_shell *shell,
+						int expand);
 
 // REDIR
-void				ft_open_file(char *line, int i, t_fd *fds);
-void				ft_parse_redir_and_set_fd(char *line, t_fd *fds);
+void				ft_open_file(char *line, int i, t_fd *fds, t_shell *shell);
+void				ft_parse_redir_and_set_fd(char *line, t_fd *fds,
+						t_shell *shell);
 
 // EXPAND
 void				ft_switch_flags(int *block_flag);
-void				ft_expand_sign_matrix(char **matrix, t_shell *shell);
+void				ft_expand_sign_matrix(char **matrix, t_shell *shell, int i);
 void				ft_deal_with_quotes(char **matrix, int i, int j,
 						t_shell *shell);
 void				ft_remove_quotes_logic(char *str, int len);

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:09 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 09:48:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:39:12 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	ft_get_nameindex(char *line, int *quote, int *i, int *j)
 	return (0);
 }
 
-char	*ft_strchr_dupfilename(char *line, int i)
+char	*ft_strchr_dupfilename(char *line, int i, t_shell *shell, int expand)
 {
 	char	*filename;
 	int		quote;
@@ -74,7 +74,7 @@ char	*ft_strchr_dupfilename(char *line, int i)
 	quote = 0;
 	if (ft_get_nameindex(line, &quote, &i, &j) != 0)
 		return (NULL);
-	filename = (char *)ft_calloc((j - i + 1), sizeof(char));
+	filename = (char *)ft_calloc((j - i + 5), sizeof(char));
 	if (filename == NULL)
 		return (NULL);
 	j -= i;
@@ -84,6 +84,8 @@ char	*ft_strchr_dupfilename(char *line, int i)
 		filename[quote++] = line[i];
 		line[i++] = ' ';
 	}
+	if (expand == true && line[i] != '\'')
+		ft_expand_sign_matrix(&filename, shell, 1);
 	if (line[i] == '\'' || line[i] == '\"')
 		line[i] = ' ';
 	return (filename);
