@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/06 16:34:43 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 10:23:57 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,11 @@ typedef struct s_shell
 {
 	t_cmd			*cmd;
 	t_env			*envp_list;
+	char			**cmdstmp;
 	char			*line;
 	char			**envp;
 	int				status;
-  int       heredoc_exitstatus;
+	int				heredoc_exitstatus;
 	int				pipe_fd[2];
 }					t_shell;
 
@@ -120,6 +121,13 @@ char				*ft_limit_buffer(char *line);
 char				**ft_parser_split(char *line, char *delim);
 int					ft_is_pipe(char *line);
 int					ft_check_unvalid(char *line);
+
+// PARSER_CHECK_UTILS
+int					toggle_quotes(int quotes);
+bool				handle_pipe(int *token);
+bool				handle_redirection(int *token, char *line, int *i);
+bool				handle_less_than(int *token, char *line, int *i);
+bool				handle_other_chars(char ch, int *token);
 
 // PARSER
 void				add_args_and_output(t_cmd *new, char **args, t_fd *fds);

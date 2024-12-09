@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/06 16:34:52 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 09:55:46 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds, t_shell *shell)
 		{
 			ft_reset_fd_in(fds);
 			ft_open_file(line, i, fds, shell);
-      if (shell->heredoc_exitstatus == 130)
-        return ;
+			if (shell->heredoc_exitstatus == 130)
+				return ;
 			if (line[i + 1] == '<')
 				i++;
 		}
@@ -96,17 +96,18 @@ void	add_cmd(t_shell *shell, char **args, t_fd *fds, int is_pipe)
 	}
 }
 
-int ft_free_mat(char **mat)
+int	ft_free_mat(char **mat)
 {
-  int i;
+	int	i;
 
-  i = 0;
-  if (mat == NULL)
-    return (1);
-  while (mat[i] != NULL)
-    free(mat[i++]);
-  free(mat);
-  return (1);
+	i = 0;
+	if (mat == NULL)
+		return (1);
+	while (mat[i] != NULL)
+		free(mat[i++]);
+	free(mat);
+	mat = NULL;
+	return (1);
 }
 
 // This function parses the line and adds the commands
@@ -117,7 +118,6 @@ int ft_free_mat(char **mat)
 // It frees the args and the new_line
 void	parse_line(t_shell *shell)
 {
-	char	**cmds;
 	char	**args;
 	t_fd	fds;
 	int		i;
@@ -126,20 +126,20 @@ void	parse_line(t_shell *shell)
 	i = -1;
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
-	cmds = ft_parser_split(shell->line, "|");
-	while (cmds[++i] != NULL)
+	shell->cmdstmp = ft_parser_split(shell->line, "|");
+	while (shell->cmdstmp[++i] != NULL)
 	{
-		ft_parse_redir_and_set_fd(cmds[i], &fds, shell);
-    if (shell->heredoc_exitstatus == 130 && ft_free_mat(cmds))
-      return ;
-		ft_expand_sign_matrix(&cmds[i], shell, 0);
-		args = ft_parser_split(cmds[i], " \t");
+		ft_parse_redir_and_set_fd(shell->cmdstmp[i], &fds, shell);
+		if (shell->heredoc_exitstatus == 130 && ft_free_mat(shell->cmdstmp))
+			return ;
+		ft_expand_sign_matrix(&shell->cmdstmp[i], shell, 0);
+		args = ft_parser_split(shell->cmdstmp[i], " \t");
 		j = -1;
 		while (args[++j] != NULL)
 			ft_remove_quotes_logic(args[j], ft_strlen(args[j]));
 		add_cmd(shell, args, &fds, ft_is_pipe(shell->line));
 		ft_free_args(args);
-		free(cmds[i]);
 	}
-	free(cmds);
+	ft_free_args(shell->cmdstmp);
+	shell->cmdstmp = NULL;
 }

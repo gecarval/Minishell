@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:15 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/06 08:25:19 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 08:49:32 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ static void	ft_handle_input(char *line, int i, t_fd *fds, t_shell *shell)
 		fds->fd_heredoc = 1;
 		fds->filename_in = ft_strchr_dupfilename(line, i + 2, shell, false);
 		ft_heredoc_handler(fds, shell);
-    if (shell->status == 130)
-      return ;
+		if (shell->heredoc_exitstatus == 130)
+		{
+			free(fds->filename_in);
+			return ;
+		}
 	}
 	else
 	{

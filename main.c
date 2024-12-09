@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 11:44:42 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 09:28:09 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(shell.line);
 			parse_line(&shell);
-      if (shell.heredoc_exitstatus == 130)
-      {
-        shell.heredoc_exitstatus = 0;
-        continue ;
-      }
+			if (shell.heredoc_exitstatus == 130)
+				shell.heredoc_exitstatus = 0;
 			exec_cmd(&shell);
 			free_cmd(&shell.cmd);
 		}

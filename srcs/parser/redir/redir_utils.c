@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:09 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/06 16:39:12 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 08:48:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	*ft_strchr_dupfilename(char *line, int i, t_shell *shell, int expand)
 	quote = 0;
 	if (ft_get_nameindex(line, &quote, &i, &j) != 0)
 		return (NULL);
-	filename = (char *)ft_calloc((j - i + 5), sizeof(char));
+	filename = (char *)ft_calloc((j - i + 2), sizeof(char));
 	if (filename == NULL)
 		return (NULL);
 	j -= i;

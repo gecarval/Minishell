@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:38 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/29 09:53:38 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/09 09:29:45 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ void	ft_init_shell(t_shell *shell, char **envp)
 	envp = shell->envp;
 	shell->line = NULL;
 	shell->cmd = NULL;
+	shell->cmdstmp = NULL;
 	shell->status = 0;
+	shell->heredoc_exitstatus = 0;
 	shell->pipe_fd[0] = 0;
 	shell->pipe_fd[1] = 1;
 	ft_generate_newlevel(shell);
