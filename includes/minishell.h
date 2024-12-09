@@ -90,6 +90,7 @@ typedef struct s_shell
 	char			*line;
 	char			**envp;
 	int				status;
+  int       heredoc_exitstatus;
 	int				pipe_fd[2];
 }					t_shell;
 

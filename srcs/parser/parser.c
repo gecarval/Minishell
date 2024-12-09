@@ -19,6 +19,7 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds, t_shell *shell)
 	int	i;
 
 	i = -1;
+	ft_init_fd(fds);
 	while (line[++i] != '\0')
 	{
 		if (line[i] == '>')
@@ -32,6 +33,8 @@ void	ft_parse_redir_and_set_fd(char *line, t_fd *fds, t_shell *shell)
 		{
 			ft_reset_fd_in(fds);
 			ft_open_file(line, i, fds, shell);
+      if (shell->heredoc_exitstatus == 130)
+        return ;
 			if (line[i + 1] == '<')
 				i++;
 		}
@@ -93,6 +96,19 @@ void	add_cmd(t_shell *shell, char **args, t_fd *fds, int is_pipe)
 	}
 }
 
+int ft_free_mat(char **mat)
+{
+  int i;
+
+  i = 0;
+  if (mat == NULL)
+    return (1);
+  while (mat[i] != NULL)
+    free(mat[i++]);
+  free(mat);
+  return (1);
+}
+
 // This function parses the line and adds the commands
 // to the command structure List
 // It splits the line by pipes and then by spaces using
@@ -107,14 +123,15 @@ void	parse_line(t_shell *shell)
 	int		i;
 	int		j;
 
-	i = 0;
+	i = -1;
 	if (ft_check_unvalid(shell->line) == 1)
 		return ;
 	cmds = ft_parser_split(shell->line, "|");
-	while (cmds[i] != NULL)
+	while (cmds[++i] != NULL)
 	{
-		ft_init_fd(&fds);
 		ft_parse_redir_and_set_fd(cmds[i], &fds, shell);
+    if (shell->heredoc_exitstatus == 130 && ft_free_mat(cmds))
+      return ;
 		ft_expand_sign_matrix(&cmds[i], shell, 0);
 		args = ft_parser_split(cmds[i], " \t");
 		j = -1;
@@ -123,7 +140,6 @@ void	parse_line(t_shell *shell)
 		add_cmd(shell, args, &fds, ft_is_pipe(shell->line));
 		ft_free_args(args);
 		free(cmds[i]);
-		i++;
 	}
 	free(cmds);
 }

@@ -72,9 +72,9 @@ void	free_cmd(t_cmd **cmd)
 			free((*cmd)->fd.filename_in);
 		if ((*cmd)->fd.filename_out != NULL)
 			free((*cmd)->fd.filename_out);
-		if ((*cmd)->fd.fd_out != STDOUT_FILENO)
+		if ((*cmd)->fd.fd_out != STDOUT_FILENO && (*cmd)->fd.fd_out > 0)
 			close((*cmd)->fd.fd_out);
-		if ((*cmd)->fd.fd_in != STDIN_FILENO)
+		if ((*cmd)->fd.fd_in != STDIN_FILENO && (*cmd)->fd.fd_in > 0)
 			close((*cmd)->fd.fd_in);
 		if ((*cmd)->cmd != NULL)
 			free((*cmd)->cmd);

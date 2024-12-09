@@ -25,7 +25,7 @@ int	ft_exit(t_shell *shell)
 		return (1);
 	}
 	ft_free_all(shell);
-	ft_putendl_fd("exit", 1);
+	write(1, "exit\n", 5);
 	if (ft_lstsize_cmd(shell->cmd) > 1)
 		return (fd);
 	exit(fd);

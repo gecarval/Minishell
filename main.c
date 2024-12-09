@@ -59,6 +59,11 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(shell.line);
 			parse_line(&shell);
+      if (shell.heredoc_exitstatus == 130)
+      {
+        shell.heredoc_exitstatus = 0;
+        continue ;
+      }
 			exec_cmd(&shell);
 			free_cmd(&shell.cmd);
 		}

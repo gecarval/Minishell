@@ -39,6 +39,8 @@ static void	ft_handle_input(char *line, int i, t_fd *fds, t_shell *shell)
 		fds->fd_heredoc = 1;
 		fds->filename_in = ft_strchr_dupfilename(line, i + 2, shell, false);
 		ft_heredoc_handler(fds, shell);
+    if (shell->status == 130)
+      return ;
 	}
 	else
 	{

@@ -63,7 +63,8 @@ char	*ft_putstr_instr(char *str, char *insert_str, int insert_len,
 		if (i == insert_index)
 			while (insert_str != NULL && insert_str[j] != '\0')
 				new_str[i++] = insert_str[j++];
-		new_str[i++] = str[k++];
+    if (str[k] != '\0')
+  		new_str[i++] = str[k++];
 	}
 	free(str);
 	return (new_str);
