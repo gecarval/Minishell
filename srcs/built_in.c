@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/19 13:28:51 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:22:20 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	ft_exit(t_shell *shell)
 	if (shell->cmd->argc > 2)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		return (1);
+		return (2);
 	}
-	ft_free_all(shell);
 	write(1, "exit\n", 5);
 	if (ft_lstsize_cmd(shell->cmd) > 1)
 		return (fd);
+	ft_free_all(shell);
 	exit(fd);
 	return (0);
 }
@@ -40,6 +40,8 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 	char	*cwd;
 
 	tmp = shell->envp_list;
+	oldpwd = NULL;
+	pwd = NULL;
 	while (tmp != NULL)
 	{
 		if (ft_strncmp(tmp->key, "OLDPWD", 6) == 0)
@@ -97,27 +99,52 @@ int	ft_pwd(void)
 	return (0);
 }
 
-int	ft_echo(t_cmd *cmd)
+// Helper function to check if a string is a valid -n flag
+bool is_n_flag(const char *arg)
 {
-	int	flag;
-	int	i;
+    int i = 1;
 
-	i = 0;
-	flag = 0;
-	while (cmd->args[++i] != NULL)
-	{
-		if (i == 1 && ft_strncmp(cmd->args[i], "-n",
-				ft_strlen(cmd->args[i])) == 0)
-		{
-			flag = i;
-			continue ;
-		}
-		else
-			ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
-		if (cmd->args[i + 1] != NULL)
-			ft_putstr_fd(" ", STDOUT_FILENO);
-	}
-	if (flag == 0)
-		ft_putstr_fd("\n", STDOUT_FILENO);
-	return (0);
+    // Check if the argument starts with '-'
+    if (arg[0] != '-')
+        return false;
+
+    // Validate that all remaining characters are 'n'
+    while (arg[i] != '\0')
+    {
+        if (arg[i] != 'n')
+            return false;
+        i++;
+    }
+
+    return (i > 1); // Ensure there's at least one 'n' after '-'
 }
+
+
+int ft_echo(t_cmd *cmd)
+{
+    int i = 1; // Start from the first argument after the command name
+    int flag = 0;
+
+    // Parse -n flags
+    while (cmd->args[i] && is_n_flag(cmd->args[i]))
+    {
+        flag = 1; // Set flag if any -n is found
+        i++;
+    }
+
+    // Print the remaining arguments
+    while (cmd->args[i] != NULL)
+    {
+        ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
+        if (cmd->args[i + 1] != NULL)
+            ft_putstr_fd(" ", STDOUT_FILENO);
+        i++;
+    }
+
+    // Print newline only if no -n flag was found
+    if (!flag)
+        ft_putstr_fd("\n", STDOUT_FILENO);
+
+    return 0;
+}
+

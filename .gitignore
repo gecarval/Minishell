@@ -3,3 +3,4 @@ minishell
 *.o
 *.swp
 ./libft/libft.a
+./.vscode

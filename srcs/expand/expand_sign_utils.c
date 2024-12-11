@@ -35,7 +35,7 @@ char	*ft_strchr_validenv(const char *s)
 	s_len = ft_strlen(s);
 	while (s_len >= 0 && *s != '=')
 	{
-		if (*s == '\"' || *s == '\'' || (ft_isalnum(*s) == 0 && *s != '_'))
+		if (*s == '\"' || *s == '\'' || (ft_isalnum(*s) != 1 && *s != '_'))
 			return ((char *)s);
 		s++;
 		s_len--;
@@ -66,6 +66,7 @@ char	*ft_putstr_instr(char *str, char *insert_str, int insert_len,
 		if (str[k] != '\0')
 			new_str[i++] = str[k++];
 	}
-	free(str);
+	if (str != NULL)
+		free(str);
 	return (new_str);
 }

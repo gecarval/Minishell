@@ -6,16 +6,26 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:38 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 09:29:45 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:14:30 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+int	ft_crtl_c(int value)
+{
+	static int	status = 0;
+
+	if (value != -1)
+		status = value;
+	return (status);
+}
+
 void	ft_signal_handler(int signum)
 {
 	(void)signum;
 	write(1, "\n", 1);
+	ft_crtl_c(130);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();

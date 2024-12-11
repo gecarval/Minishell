@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:18:39 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/20 16:11:52 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:22:41 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_exit_atol(char *str)
 		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(str, 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
-		return (1);
+		return (2);
 	}
 	return ((int)((ret * sign) % 256));
 }

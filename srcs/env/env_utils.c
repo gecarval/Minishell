@@ -17,6 +17,8 @@ char	*ft_getenv(char *key, t_env **envp_list)
 	t_env	*tmp;
 
 	tmp = *envp_list;
+	if (key == NULL)
+		return (NULL);
 	while (tmp != NULL)
 	{
 		if (ft_strncmp(tmp->key, key, ft_strlen(tmp->key)) == 0)

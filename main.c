@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 09:28:09 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:25:01 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		signal(SIGINT, ft_signal_handler);
 		shell.line = ft_limit_buffer(readline(PROMPT));
+		shell.status = ft_crtl_c(-1);
 		if (shell.line == NULL)
 			write(1, "exit\n", 5);
 		if (shell.line == NULL)

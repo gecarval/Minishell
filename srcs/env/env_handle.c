@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/27 16:03:00 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:16:45 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,11 @@ int	ft_export_print(t_shell *shell)
 
 int	ft_export(t_cmd *cmd, t_shell *shell)
 {
+	int	status;
 	int	i;
 
 	i = 0;
+	status = 0;
 	if (cmd->argc == 1)
 		return (ft_export_print(shell));
 	while (cmd->args[++i] != NULL)
@@ -52,7 +54,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(cmd->args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
-			return (1);
+			status = 1;
 		}
 		else if (ft_export_on_same_key(cmd->args[i], shell) == 0)
 		{
@@ -60,7 +62,7 @@ int	ft_export(t_cmd *cmd, t_shell *shell)
 		}
 	}
 	ft_update_envp_matrix(shell);
-	return (0);
+	return (status);
 }
 
 int	ft_cmp_and_unset(t_env *tmp, t_env *prev, char *arg, t_shell *shell)
