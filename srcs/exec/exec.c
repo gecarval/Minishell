@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/02 11:58:00 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:32:35 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 		shell->status = WEXITSTATUS(shell->status);
 	else if (WIFSIGNALED(shell->status) == true)
 		shell->status = 128 + WTERMSIG(shell->status);
+	ft_crtl_c(shell->status);
 	wait(NULL);
 	ft_free_all(shell);
 	return (shell->status);
@@ -115,4 +116,5 @@ void	exec_cmd(t_shell *shell)
 		shell->status = WEXITSTATUS(shell->status);
 	else if (WIFSIGNALED(shell->status) == true)
 		shell->status = 128 + WTERMSIG(shell->status);
+	ft_crtl_c(shell->status);
 }

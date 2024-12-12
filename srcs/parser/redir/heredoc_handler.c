@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:23 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 09:47:10 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:33:22 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	ft_heredoc_handler(t_fd *fds, t_shell *shell)
 	if (status == 130)
 	{
 		shell->status = 130;
+		ft_crtl_c(130);
 		shell->heredoc_exitstatus = 130;
 		free_cmd(&shell->cmd);
 	}

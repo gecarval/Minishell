@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 13:22:20 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:50:10 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,14 @@ int	ft_cd(t_cmd *cmd, t_shell *shell)
 			ft_putstr_fd("minishell: cd: ", 2);
 			ft_putstr_fd(cmd->args[1], 2);
 			ft_putstr_fd(": No such file or directory\n", 2);
-			return (1);
+			return (2);
 		}
 		ft_update_oldpwd_and_pwd_path(shell);
 	}
 	else
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-		return (1);
+		return (2);
 	}
 	return (0);
 }
@@ -99,52 +99,42 @@ int	ft_pwd(void)
 	return (0);
 }
 
-// Helper function to check if a string is a valid -n flag
-bool is_n_flag(const char *arg)
+bool	is_n_flag(const char *arg)
 {
-    int i = 1;
+	int	i;
 
-    // Check if the argument starts with '-'
-    if (arg[0] != '-')
-        return false;
-
-    // Validate that all remaining characters are 'n'
-    while (arg[i] != '\0')
-    {
-        if (arg[i] != 'n')
-            return false;
-        i++;
-    }
-
-    return (i > 1); // Ensure there's at least one 'n' after '-'
+	i = 1;
+	if (arg[0] != '-')
+		return (false);
+	while (arg[i] != '\0')
+	{
+		if (arg[i] != 'n')
+			return (false);
+		i++;
+	}
+	return (i > 1);
 }
 
-
-int ft_echo(t_cmd *cmd)
+int	ft_echo(t_cmd *cmd)
 {
-    int i = 1; // Start from the first argument after the command name
-    int flag = 0;
+	int	i;
+	int	flag;
 
-    // Parse -n flags
-    while (cmd->args[i] && is_n_flag(cmd->args[i]))
-    {
-        flag = 1; // Set flag if any -n is found
-        i++;
-    }
-
-    // Print the remaining arguments
-    while (cmd->args[i] != NULL)
-    {
-        ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
-        if (cmd->args[i + 1] != NULL)
-            ft_putstr_fd(" ", STDOUT_FILENO);
-        i++;
-    }
-
-    // Print newline only if no -n flag was found
-    if (!flag)
-        ft_putstr_fd("\n", STDOUT_FILENO);
-
-    return 0;
+	i = 1;
+	flag = 0;
+	while (cmd->args[i] && is_n_flag(cmd->args[i]))
+	{
+		flag = 1;
+		i++;
+	}
+	while (cmd->args[i] != NULL)
+	{
+		ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
+		if (cmd->args[i + 1] != NULL)
+			ft_putstr_fd(" ", STDOUT_FILENO);
+		i++;
+	}
+	if (!flag)
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	return (0);
 }
-

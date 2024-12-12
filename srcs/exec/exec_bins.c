@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 10:13:11 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:32:41 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 		workdone = ft_export(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
 		workdone = ft_unset(cmd, shell);
-	shell->status = workdone;
+	shell->status = ft_crtl_c(workdone);
 	return (workdone);
 }
 
@@ -105,6 +105,6 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 		workdone = ft_env(shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
 		workdone = ft_echo(cmd);
-	shell->status = workdone;
+	shell->status = ft_crtl_c(workdone);
 	return (workdone);
 }
