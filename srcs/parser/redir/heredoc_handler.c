@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:23 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/12 15:33:22 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:09:44 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 
 static void	signal_heredoc(int signum)
 {
+	t_fd	*fds;
+
 	(void)signum;
-	close(2);
+	fds = ft_fd_address(NULL);
+	close(fds->fd_in);
+	free(fds->filename_in);
+	ft_free_all(ft_shell_address(NULL), false);
 	exit(130);
 }
 
-static void	ft_define_heredoc_signal(void)
+static void	ft_define_heredoc_signal(t_fd *fds)
 {
+	ft_fd_address(fds);
 	signal(SIGINT, signal_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -29,11 +35,11 @@ static void	ft_exec_heredoc_on_child(t_fd *fds, t_shell *shell)
 {
 	char	*line;
 
-	close(2);
+	ft_shell_address(shell);
 	fds->fd_in = open(".heredoc_tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	while (1)
 	{
-		ft_define_heredoc_signal();
+		ft_define_heredoc_signal(fds);
 		line = readline("heredoc> ");
 		if (line == NULL)
 			break ;
@@ -50,7 +56,7 @@ static void	ft_exec_heredoc_on_child(t_fd *fds, t_shell *shell)
 	}
 	close(fds->fd_in);
 	free(fds->filename_in);
-	ft_free_all(shell);
+	ft_free_all(shell, true);
 	exit(0);
 }
 
@@ -69,8 +75,7 @@ void	ft_heredoc_handler(t_fd *fds, t_shell *shell)
 		status = WTERMSIG(status) + 128;
 	if (status == 130)
 	{
-		shell->status = 130;
-		ft_crtl_c(130);
+		shell->status = ft_crtl_c(130);
 		shell->heredoc_exitstatus = 130;
 		free_cmd(&shell->cmd);
 	}

@@ -6,13 +6,13 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/12 15:50:10 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:14:33 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_exit(t_shell *shell)
+int	ft_exit(t_shell *shell, int flag)
 {
 	int	fd;
 
@@ -24,10 +24,11 @@ int	ft_exit(t_shell *shell)
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		return (2);
 	}
-	write(1, "exit\n", 5);
+	if (flag > 0)
+		ft_putstr_fd("exit\n", 1);
 	if (ft_lstsize_cmd(shell->cmd) > 1)
 		return (fd);
-	ft_free_all(shell);
+	ft_free_all(shell, true);
 	exit(fd);
 	return (0);
 }

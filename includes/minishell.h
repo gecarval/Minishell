@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 15:12:41 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:15:15 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,15 @@ char				*ft_limit_buffer(char *line);
 // FREE
 void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
-int					ft_free_all(t_shell *shell);
+int					ft_free_all(t_shell *shell, int flag);
 void				ft_free_envp_list(t_env *env);
 
 // INIT
+t_shell				*ft_shell_address(t_shell *shell);
 void				ft_signal_handler(int signum);
 void				ft_init_shell(t_shell *shell, char **envp);
-int				ft_crtl_c(int value);
+t_fd				*ft_fd_address(t_fd *fd);
+int					ft_crtl_c(int value);
 
 // UTILS
 int					ft_exit_atol(char *str);
@@ -181,7 +183,7 @@ int					ft_export_on_same_key(char *arg, t_shell *shell);
 int					ft_invalid_key(char *str);
 
 // BUILTINS
-int					ft_exit(t_shell *shell);
+int					ft_exit(t_shell *shell, int flag);
 int					ft_cd(t_cmd *cmd, t_shell *shell);
 int					ft_pwd(void);
 int					ft_export(t_cmd *cmd, t_shell *shell);
