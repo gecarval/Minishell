@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
+/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 10:34:48 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 15:51:37 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_exit(t_shell *shell, int flag)
 	if (shell->cmd->argc > 2)
 	{
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		return (2);
+		return (1);
 	}
 	if (flag > 0)
 		ft_putstr_fd("exit\n", 1);
@@ -64,7 +64,8 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 
 int	ft_cd(t_cmd *cmd, t_shell *shell)
 {
-	int	chdrir_ret;
+	int			chdrir_ret;
+	struct stat	buf;
 
 	if (cmd->argc == 1)
 		return (0);
@@ -73,19 +74,20 @@ int	ft_cd(t_cmd *cmd, t_shell *shell)
 		chdrir_ret = chdir(cmd->args[1]);
 		if (chdrir_ret == -1)
 		{
+			buf.st_mode = 0;
 			ft_putstr_fd("minishell: cd: ", 2);
 			ft_putstr_fd(cmd->args[1], 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			return (2);
+			if (!S_ISDIR(buf.st_mode))
+				ft_putstr_fd(": is not a directory\n", 2);
+			else
+				ft_putstr_fd(": No such file or directory\n", 2);
+			return (1);
 		}
 		ft_update_oldpwd_and_pwd_path(shell);
+		return (0);
 	}
-	else
-	{
-		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-		return (2);
-	}
-	return (0);
+	ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+	return (1);
 }
 
 int	ft_pwd(void)

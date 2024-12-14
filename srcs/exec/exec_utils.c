@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
+/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:10:21 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 12:43:02 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 15:58:43 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,18 @@ void	ft_dup2_errors(char *filename, t_shell *shell)
 	struct stat	buf;
 
 	if (filename != NULL)
-		stat(filename, &buf);
-	if (filename != NULL)
 	{
+		buf.st_mode = 0;
+		stat(filename, &buf);
 		ft_putstr_fd("minishell: ", 2);
 		if (filename != NULL)
 			ft_putstr_fd(filename, 2);
 		if (S_ISDIR(buf.st_mode))
 			ft_putstr_fd(": is a directory\n", 2);
-		else if (access(filename, F_OK) != 0)
-			ft_putstr_fd(": Permission denied\n", 2);
-		else
+		else if (access(filename, F_OK))
 			ft_putstr_fd(": No such file or directory\n", 2);
+		else
+			ft_putstr_fd(": Permission denied\n", 2);
 	}
 	else
 	{
