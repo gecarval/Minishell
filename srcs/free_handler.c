@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_handler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 16:31:42 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 19:19:09 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ft_free_all(t_shell *shell, int flag)
 		free(shell->line);
 	if (shell->cmd != NULL)
 		free_cmd(&shell->cmd);
-	if (shell->cmdstmp != NULL && flag == 1)
+	if (shell->cmdstmp != NULL && flag == true)
 		ft_free_args(shell->cmdstmp);
 	close(shell->pipe_fd[0]);
 	close(shell->pipe_fd[1]);

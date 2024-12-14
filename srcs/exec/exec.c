@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 17:09:34 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 19:07:47 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,17 @@ static void	ft_child_pipe(t_cmd *cmd, t_shell *shell)
 
 static void	ft_parent_pipe(t_cmd *cmd, t_shell *shell)
 {
+	int	i;
+
 	if (cmd->next != NULL && cmd->next->fd.fd_in == STDIN_FILENO)
 		ft_dup2(shell->pipe_fd[0], STDIN_FILENO, shell, NULL);
 	if (cmd->next != NULL)
 		close(shell->pipe_fd[1]);
 	if (cmd->next != NULL)
 		close(shell->pipe_fd[0]);
+	i = 0;
+	while (i < 100000)
+		i++;
 }
 
 int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
@@ -110,9 +115,10 @@ void	exec_cmd(t_shell *shell)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (shell->cmd->type == PIPE)
+		if (shell->cmd->type == EXEC)
+			exit(ft_normal_exec(shell->cmd, shell));
+		else
 			exit(ft_exec_if_pipe(shell->cmd, shell));
-		exit(ft_normal_exec(shell->cmd, shell));
 	}
 	signal(SIGINT, ft_signal_hand);
 	waitpid(pid, &shell->status, 0);

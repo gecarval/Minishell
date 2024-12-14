@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:15 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 08:49:32 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 19:06:07 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,20 @@ static void	ft_handle_output(char *line, int i, t_fd *fds, t_shell *shell)
 	{
 		line[i + 1] = ' ';
 		fds->filename_out = ft_strchr_dupfilename(line, i + 2, shell, true);
-		fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_APPEND,
-				0644);
+		if (fds->filename_out != NULL)
+			fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_APPEND,
+					0644);
+		else
+			fds->fd_out = -1;
 	}
 	else
 	{
 		fds->filename_out = ft_strchr_dupfilename(line, i + 1, shell, true);
-		fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_TRUNC,
-				0644);
+		if (fds->filename_out != NULL)
+			fds->fd_out = open(fds->filename_out, O_CREAT | O_WRONLY | O_TRUNC,
+					0644);
+		else
+			fds->fd_out = -1;
 	}
 }
 
@@ -49,7 +55,10 @@ static void	ft_handle_input(char *line, int i, t_fd *fds, t_shell *shell)
 	{
 		fds->fd_heredoc = 0;
 		fds->filename_in = ft_strchr_dupfilename(line, i + 1, shell, true);
-		fds->fd_in = open(fds->filename_in, O_RDONLY);
+		if (fds->filename_in != NULL)
+			fds->fd_in = open(fds->filename_in, O_RDONLY);
+		else
+			fds->fd_in = -1;
 	}
 }
 

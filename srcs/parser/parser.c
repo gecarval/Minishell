@@ -6,7 +6,7 @@
 /*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:39:32 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 16:24:59 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 18:54:20 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ void	add_cmd(t_shell *shell, char **args, t_fd *fds, int is_pipe)
 	t_cmd	*new;
 	t_cmd	*last;
 
+	if (args != NULL && args[0] == NULL)
+		return ;
 	new = (t_cmd *)malloc(sizeof(t_cmd));
 	if (new == NULL)
 		return ;

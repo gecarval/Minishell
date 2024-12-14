@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:11:23 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/13 16:09:44 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 19:19:16 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	signal_heredoc(int signum)
 	fds = ft_fd_address(NULL);
 	close(fds->fd_in);
 	free(fds->filename_in);
-	ft_free_all(ft_shell_address(NULL), false);
+	ft_free_all(ft_shell_address(NULL), true);
 	exit(130);
 }
 
