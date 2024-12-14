@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/13 16:14:33 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:34:48 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,10 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 	t_env	*oldpwd;
 	t_env	*pwd;
 	t_env	*tmp;
-	char	*cwd;
 
 	tmp = shell->envp_list;
-	oldpwd = NULL;
 	pwd = NULL;
+	oldpwd = NULL;
 	while (tmp != NULL)
 	{
 		if (ft_strncmp(tmp->key, "OLDPWD", 6) == 0)
@@ -51,16 +50,16 @@ void	ft_update_oldpwd_and_pwd_path(t_shell *shell)
 			pwd = tmp;
 		tmp = tmp->next;
 	}
-	cwd = getcwd(NULL, 0);
 	if (oldpwd != NULL && oldpwd->value != NULL)
 		free(oldpwd->value);
 	if (oldpwd != NULL && pwd != NULL)
 		oldpwd->value = ft_strdup(pwd->value);
+	else if (pwd == NULL && oldpwd != NULL)
+		oldpwd->value = NULL;
 	if (pwd != NULL && pwd->value != NULL)
 		free(pwd->value);
 	if (pwd != NULL)
-		pwd->value = ft_strdup(cwd);
-	free(cwd);
+		pwd->value = getcwd(NULL, 0);
 }
 
 int	ft_cd(t_cmd *cmd, t_shell *shell)
@@ -98,22 +97,6 @@ int	ft_pwd(void)
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	free(cwd);
 	return (0);
-}
-
-bool	is_n_flag(const char *arg)
-{
-	int	i;
-
-	i = 1;
-	if (arg[0] != '-')
-		return (false);
-	while (arg[i] != '\0')
-	{
-		if (arg[i] != 'n')
-			return (false);
-		i++;
-	}
-	return (i > 1);
 }
 
 int	ft_echo(t_cmd *cmd)

@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:10:21 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/13 15:58:37 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 12:43:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,43 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 	}
 }
 
-void	ft_dup2(int fd, int fd2, t_shell *shell, char *bin_route)
+void	ft_dup2_errors(char *filename, t_shell *shell)
 {
+	struct stat	buf;
+
+	if (filename != NULL)
+		stat(filename, &buf);
+	if (filename != NULL)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		if (filename != NULL)
+			ft_putstr_fd(filename, 2);
+		if (S_ISDIR(buf.st_mode))
+			ft_putstr_fd(": is a directory\n", 2);
+		else if (access(filename, F_OK) != 0)
+			ft_putstr_fd(": Permission denied\n", 2);
+		else
+			ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	else
+	{
+		ft_putstr_fd("minishell: ", 2);
+		if (filename != NULL)
+			ft_putstr_fd(filename, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	ft_free_all(shell, true);
+	exit(1);
+}
+
+void	ft_dup2(int fd, int fd2, t_shell *shell, char *filename)
+{
+	if (fd == -1)
+		ft_dup2_errors(filename, shell);
 	if (dup2(fd, fd2) == -1)
 	{
 		ft_putstr_fd("minishell: dup2 failed\n", 2);
 		ft_free_all(shell, true);
-		if (bin_route != NULL)
-			free(bin_route);
 		exit(2);
 	}
 }

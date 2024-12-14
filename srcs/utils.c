@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:18:39 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 13:22:41 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 09:57:44 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,22 @@ int	ft_exit_atol(char *str)
 		return (2);
 	}
 	return ((int)((ret * sign) % 256));
+}
+
+bool	is_n_flag(const char *arg)
+{
+	int	i;
+
+	i = 1;
+	if (arg[0] != '-')
+		return (false);
+	while (arg[i] != '\0')
+	{
+		if (arg[i] != 'n')
+			return (false);
+		i++;
+	}
+	return (i > 1);
 }
 
 int	ft_chrcmpstr(char chr, char *str)

@@ -6,11 +6,44 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 08:20:19 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 08:55:17 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 11:31:09 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+bool	ft_is_end_of_var(char *matrix, int block_flag, int inside_quotes, int j)
+{
+	char	c;
+
+	c = matrix[j + 1];
+	if ((matrix[j] == '$' && (matrix[j + 1] == '$' || matrix[j + 1] == '\0')
+			&& block_flag == 0) || (matrix[j] == '$' && (matrix[j + 1] == '\''
+				|| matrix[j + 1] == '\"') && (block_flag == 1 || inside_quotes
+				% 2 == 1)))
+		return (true);
+	if (block_flag == 0 || inside_quotes % 2 == 0)
+		if (c == ' ' || c == '\0' || c == '$' || c == '\\' || c == '|'
+			|| c == '>' || c == '<' || c == ';' || c == '&' || c == '`'
+			|| c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f'
+			|| c == '*' || c == '[' || c == ']' || c == '{' || c == '}'
+			|| c == '~' || c == '#' || c == '%' || c == '!' || c == '@'
+			|| c == '^' || c == '=' || c == '+' || c == '-' || c == '.'
+			|| c == ',' || c == ':' || c == '_' || c == ';' || c == '&'
+			|| c == '/')
+			return (true);
+	return (false);
+}
+
+void	ft_quotes_block_toggle(char c, int *block_flag, int *inside_quotes)
+{
+	if (c == '\"')
+		*inside_quotes += 1;
+	if (c == '\'' && *block_flag == 1 && *inside_quotes % 2 != 1)
+		*block_flag = 0;
+	else if (c == '\'' && *block_flag == 0 && *inside_quotes % 2 != 1)
+		*block_flag = 1;
+}
 
 void	ft_switch_flags(int *block_flag)
 {

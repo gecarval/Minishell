@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:22:00 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/13 15:59:20 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:24:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	ft_free_envp_list(t_env *env)
 			free(env->value);
 		if (env != NULL)
 			free(env);
+		env = NULL;
 		env = tmp;
 	}
 	env = NULL;

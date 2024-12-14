@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 09:18:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/09 10:20:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:56:02 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,10 @@ int	ft_check_unexpected(char *line)
 			quotes = toggle_quotes(quotes);
 		}
 		else if (ft_check_unexpected_condtitions(line, &i, quotes, &token) == 1)
+		{
+			ft_crtl_c(2);
 			return (1);
+		}
 		i++;
 	}
 	if (token == 1)
@@ -101,24 +104,25 @@ int	ft_check_unvalid(char *line)
 	int	dquotes;
 	int	squotes;
 
-	i = 0;
+	i = -1;
 	dquotes = 0;
 	squotes = 0;
 	if (ft_check_unexpected(line) == 1)
 		ft_putendl_fd("minishell: syntax error (unexpected token)", 2);
 	if (ft_check_unexpected(line) == 1)
 		return (1);
-	while (line[i])
+	while (line[++i])
 	{
 		if (line[i] == '\"' && squotes % 2 == 0)
 			dquotes++;
 		if (line[i] == '\'' && dquotes % 2 == 0)
 			squotes++;
-		i++;
 	}
 	if (dquotes % 2 != 0 || squotes % 2 != 0)
+	{
+		ft_crtl_c(2);
 		ft_putendl_fd("minishell: syntax error (unclosed quotes)", 2);
-	if (dquotes % 2 != 0 || squotes % 2 != 0)
 		return (1);
+	}
 	return (0);
 }

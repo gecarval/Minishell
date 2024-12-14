@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:11:59 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/12 12:15:59 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:20:13 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_putstr_fd(char *s, int fd)
 	int	i;
 
 	i = 0;
-	if (!s)
+	if (s == NULL)
 		return ;
 	else
 	{
