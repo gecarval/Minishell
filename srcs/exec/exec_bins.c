@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/12 15:32:41 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:49:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	ft_exec_on_path(t_shell *shell, t_cmd *cmd)
 			ft_putstr_fd("minishell: \n", 2);
 			ft_putstr_fd(cmd->cmd, 2);
 			ft_putstr_fd(": command not found\n", 2);
-			ft_free_all(shell);
+			ft_free_all(shell, true);
 			exit(127);
 		}
 		bin_route = ft_get_bin_based_on_path(bin_route, shell, cmd);
@@ -75,7 +75,7 @@ int	ft_exec_on_parent(t_cmd *cmd, t_shell *shell)
 
 	workdone = -1;
 	if (ft_strncmp(cmd->cmd, "exit", 4) == 0)
-		workdone = ft_exit(shell);
+		workdone = ft_exit(shell, !ft_is_pipe(shell->line));
 	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
@@ -92,7 +92,7 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 
 	workdone = -1;
 	if (ft_strncmp(cmd->cmd, "exit", 4) == 0)
-		workdone = ft_exit(shell);
+		workdone = ft_exit(shell, !ft_is_pipe(shell->line));
 	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
 		workdone = ft_cd(cmd, shell);
 	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)

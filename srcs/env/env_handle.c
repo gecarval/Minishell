@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 14:35:25 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 13:16:45 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 10:26:31 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,14 @@ int	ft_env(t_shell *shell)
 	tmp = shell->envp_list;
 	while (tmp != NULL)
 	{
-		if (tmp->equal == 1)
+		if (tmp != NULL && tmp->equal == 1)
 		{
-			ft_putstr_fd(tmp->key, STDOUT_FILENO);
-			ft_putstr_fd("=", STDOUT_FILENO);
-			ft_putstr_fd(tmp->value, STDOUT_FILENO);
+			if (tmp->key != NULL)
+				ft_putstr_fd(tmp->key, STDOUT_FILENO);
+			if (tmp->value != NULL)
+				ft_putstr_fd("=", STDOUT_FILENO);
+			if (tmp->value != NULL)
+				ft_putstr_fd(tmp->value, STDOUT_FILENO);
 			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
 		tmp = tmp->next;

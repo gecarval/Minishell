@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/12 15:32:35 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 11:47:19 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,24 @@ static void	ft_child_pipe(t_cmd *cmd, t_shell *shell)
 {
 	signal(SIGQUIT, SIG_DFL);
 	if (cmd->fd.fd_out != STDOUT_FILENO)
-		ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
+		ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, cmd->fd.filename_out);
 	else if (cmd->next != NULL)
 		ft_dup2(shell->pipe_fd[1], STDOUT_FILENO, shell, NULL);
 	if (cmd->fd.fd_in != STDIN_FILENO)
-		ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, NULL);
+		ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, cmd->fd.filename_in);
 	if (cmd->next != NULL)
 		close(shell->pipe_fd[0]);
 	if (ft_exec_on_builtin(cmd, shell) >= 0)
 	{
 		if (cmd->next != NULL)
 			close(shell->pipe_fd[1]);
-		ft_free_all(shell);
+		ft_free_all(shell, true);
 		exit(shell->status);
 	}
 	ft_exec_on_path(shell, cmd);
 	if (cmd->next != NULL)
 		close(shell->pipe_fd[1]);
-	ft_free_all(shell);
+	ft_free_all(shell, true);
 	exit(shell->status);
 }
 
@@ -69,7 +69,7 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 		shell->status = 128 + WTERMSIG(shell->status);
 	ft_crtl_c(shell->status);
 	wait(NULL);
-	ft_free_all(shell);
+	ft_free_all(shell, true);
 	return (shell->status);
 }
 
@@ -77,16 +77,16 @@ int	ft_normal_exec(t_cmd *cmd, t_shell *shell)
 {
 	signal(SIGQUIT, SIG_DFL);
 	if (cmd->fd.fd_out != STDOUT_FILENO)
-		ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, NULL);
+		ft_dup2(cmd->fd.fd_out, STDOUT_FILENO, shell, cmd->fd.filename_out);
 	if (cmd->fd.fd_in != STDIN_FILENO)
-		ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, NULL);
+		ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, cmd->fd.filename_in);
 	if (ft_exec_on_builtin(cmd, shell) >= 0)
 	{
-		ft_free_all(shell);
+		ft_free_all(shell, true);
 		exit(shell->status);
 	}
 	ft_exec_on_path(shell, cmd);
-	ft_free_all(shell);
+	ft_free_all(shell, true);
 	return (shell->status);
 }
 
@@ -101,7 +101,10 @@ void	exec_cmd(t_shell *shell)
 	if (shell->cmd == NULL || shell->cmd->cmd == NULL)
 		return ;
 	if (shell->cmd->type == EXEC && ft_exec_on_parent(shell->cmd, shell) >= 0)
+	{
+		free_cmd(&shell->cmd);
 		return ;
+	}
 	pid = ft_fork(shell);
 	if (pid == 0)
 	{
@@ -117,4 +120,5 @@ void	exec_cmd(t_shell *shell)
 	else if (WIFSIGNALED(shell->status) == true)
 		shell->status = 128 + WTERMSIG(shell->status);
 	ft_crtl_c(shell->status);
+	free_cmd(&shell->cmd);
 }

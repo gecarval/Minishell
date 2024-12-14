@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 14:38:28 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 15:12:41 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 12:17:25 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <termios.h>
 
 # ifndef PROMPT
@@ -102,13 +103,15 @@ char				*ft_limit_buffer(char *line);
 // FREE
 void				free_cmd(t_cmd **cmd);
 void				ft_free_args(char **args);
-int					ft_free_all(t_shell *shell);
+int					ft_free_all(t_shell *shell, int flag);
 void				ft_free_envp_list(t_env *env);
 
 // INIT
+t_shell				*ft_shell_address(t_shell *shell);
 void				ft_signal_handler(int signum);
 void				ft_init_shell(t_shell *shell, char **envp);
-int				ft_crtl_c(int value);
+t_fd				*ft_fd_address(t_fd *fd);
+int					ft_crtl_c(int value);
 
 // UTILS
 int					ft_exit_atol(char *str);
@@ -157,6 +160,10 @@ void				ft_parse_redir_and_set_fd(char *line, t_fd *fds,
 						t_shell *shell);
 
 // EXPAND
+bool				ft_is_end_of_var(char *matrix, int block_flag,
+						int inside_quotes, int j);
+void				ft_quotes_block_toggle(char c, int *block_flag,
+						int *inside_quotes);
 void				ft_switch_flags(int *block_flag);
 void				ft_expand_sign_matrix(char **matrix, t_shell *shell, int i);
 int					ft_deal_with_quotes(char **matrix, int i, int j,
@@ -181,12 +188,13 @@ int					ft_export_on_same_key(char *arg, t_shell *shell);
 int					ft_invalid_key(char *str);
 
 // BUILTINS
-int					ft_exit(t_shell *shell);
+int					ft_exit(t_shell *shell, int flag);
 int					ft_cd(t_cmd *cmd, t_shell *shell);
 int					ft_pwd(void);
 int					ft_export(t_cmd *cmd, t_shell *shell);
 int					ft_unset(t_cmd *cmd, t_shell *shell);
 int					ft_env(t_shell *shell);
+bool				is_n_flag(const char *arg);
 int					ft_echo(t_cmd *cmd);
 
 // EXEC_UTILS

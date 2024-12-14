@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 11:40:03 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/11 13:12:42 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 11:30:57 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_expand_sign_matrix(char **matrix, t_shell *shell, int oneliner)
 	while (matrix[i] != NULL)
 	{
 		j = 0;
-		while (matrix[i][j] != '\0')
+		while (ft_strlen(matrix[i]) > (size_t)j && matrix[i][j] != '\0')
 		{
 			j += ft_deal_with_quotes(matrix, i, j, shell);
 		}
@@ -109,22 +109,17 @@ int	ft_deal_with_quotes(char **matrix, int i, int j, t_shell *shell)
 	static int	block_flag = 0;
 
 	expanded = 1;
-	if (matrix[i][j] == '\"')
-		inside_quotes += 1;
-	if (matrix[i][j] == '\'' && block_flag == 1 && inside_quotes % 2 != 1)
-		block_flag = 0;
-	else if (matrix[i][j] == '\'' && block_flag == 0 && inside_quotes % 2 != 1)
-		block_flag = 1;
-	if ((matrix[i][j] == '$' && (matrix[i][j + 1] == '$' || matrix[i][j + 1] == '\0') && block_flag == 0)
-		|| (matrix[i][j] == '$' && (matrix[i][j + 1] == '\'' || matrix[i][j + 1] == '\"')
-		&& (block_flag == 1 || inside_quotes % 2 == 1)))
+	if (ft_strlen(matrix[i]) < (size_t)j)
+		return (expanded);
+	ft_quotes_block_toggle(matrix[i][j], &block_flag, &inside_quotes);
+	if (ft_is_end_of_var(matrix[i], block_flag, inside_quotes, j) == true)
 		;
-	else if (matrix[i][j] == '$' && (matrix[i][j + 1] == '\'' || matrix[i][j + 1] == '\"')
-		&& (block_flag == 0 && inside_quotes % 2 != 1))
-		{
-			expanded = 0;
-			matrix[i] = ft_putstr_instr(matrix[i], NULL, 1, j);
-		}
+	else if (matrix[i][j] == '$' && (matrix[i][j + 1] == '\'' || matrix[i][j
+			+ 1] == '\"') && (block_flag == 0 && inside_quotes % 2 != 1))
+	{
+		expanded = 0;
+		matrix[i] = ft_putstr_instr(matrix[i], NULL, 1, j);
+	}
 	else if (matrix[i][j] == '$' && matrix[i][j + 1] == '?' && block_flag == 0)
 		expanded = ft_sign_and_question_mark(matrix, i, j, shell);
 	else if (matrix[i][j] == '$' && block_flag == 0)
