@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_bins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
+/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 10:49:31 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:08:06 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ft_exec_on_path(t_shell *shell, t_cmd *cmd)
 	char	*bin_route;
 
 	bin_route = NULL;
-	if (access(cmd->cmd, F_OK) == 0)
+	if (cmd->cmd[0] == '.' && access(cmd->cmd, F_OK) == 0)
 		bin_route = ft_strdup(cmd->cmd);
 	else
 	{
@@ -105,6 +105,6 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 		workdone = ft_env(shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
 		workdone = ft_echo(cmd);
-	shell->status = ft_crtl_c(workdone);
+//	shell->status = ft_crtl_c(workdone);
 	return (workdone);
 }

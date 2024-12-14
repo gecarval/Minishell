@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
+/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:40:26 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 11:47:19 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:09:34 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 	{
 		if (cmd->next != NULL)
 			pipe(shell->pipe_fd);
-		pid = ft_fork(shell);
+		pid = fork();
 		if (pid == 0)
 			ft_child_pipe(cmd, shell);
 		ft_parent_pipe(cmd, shell);
@@ -67,8 +67,10 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 		shell->status = WEXITSTATUS(shell->status);
 	else if (WIFSIGNALED(shell->status) == true)
 		shell->status = 128 + WTERMSIG(shell->status);
+	pid = -1;
+	while (++pid < ft_lstsize_cmd(shell->cmd))
+		wait(NULL);
 	ft_crtl_c(shell->status);
-	wait(NULL);
 	ft_free_all(shell, true);
 	return (shell->status);
 }
@@ -105,13 +107,12 @@ void	exec_cmd(t_shell *shell)
 		free_cmd(&shell->cmd);
 		return ;
 	}
-	pid = ft_fork(shell);
+	pid = fork();
 	if (pid == 0)
 	{
 		if (shell->cmd->type == PIPE)
 			exit(ft_exec_if_pipe(shell->cmd, shell));
-		else
-			exit(ft_normal_exec(shell->cmd, shell));
+		exit(ft_normal_exec(shell->cmd, shell));
 	}
 	signal(SIGINT, ft_signal_hand);
 	waitpid(pid, &shell->status, 0);

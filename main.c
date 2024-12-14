@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
+/*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:31:04 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 10:06:54 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/14 15:31:51 by badriano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,5 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(shell.line);
 	}
-	return (ft_free_all(&shell, false));
+	return (!ft_free_all(&shell, false));
 }
