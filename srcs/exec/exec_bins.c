@@ -6,7 +6,7 @@
 /*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 17:08:06 by badriano         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:55:52 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,6 @@ int	ft_exec_on_builtin(t_cmd *cmd, t_shell *shell)
 		workdone = ft_env(shell);
 	else if (ft_strncmp(cmd->cmd, "echo", 4) == 0)
 		workdone = ft_echo(cmd);
-//	shell->status = ft_crtl_c(workdone);
+	shell->status = ft_crtl_c(workdone);
 	return (workdone);
 }
