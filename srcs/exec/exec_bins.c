@@ -6,7 +6,7 @@
 /*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 17:55:52 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/15 06:10:21 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ft_exec_on_path(t_shell *shell, t_cmd *cmd)
 	char	*bin_route;
 
 	bin_route = NULL;
-	if (cmd->cmd[0] == '.' && access(cmd->cmd, F_OK) == 0)
+	if (access(cmd->cmd, F_OK) == 0)
 		bin_route = ft_strdup(cmd->cmd);
 	else
 	{
