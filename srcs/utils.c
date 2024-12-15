@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:18:39 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 09:57:44 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/15 06:16:50 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	ft_exit_atol(char *str)
 	while (str[i] != '\0')
 		ret = ret * 10 + str[i++] - '0';
 	if (str[0] == '\0' || ft_isdigit(str[i - 1]) == 0 || str[i] != '\0'
-		|| ret > 9223372036854775807 || ret < 0 || i > 19)
+		|| ret > 9223372036854775807 || ret < -9223372036854775807
+		|| i > 21)
 	{
 		ft_putstr_fd("minishell: exit: ", 2);
 		ft_putstr_fd(str, 2);
