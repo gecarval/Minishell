@@ -6,7 +6,7 @@
 /*   By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 11:19:05 by gecarval          #+#    #+#             */
-/*   Updated: 2024/11/13 12:31:16 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/15 03:17:40 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,13 @@ void	ft_update_envp_matrix(t_shell *shell)
 	{
 		if (tmp->equal == 1)
 		{
-			free(shell->envp[i]);
+			if (shell->envp[i] != NULL)
+				free(shell->envp[i]);
 			tmp2 = ft_strjoin(tmp->key, "=");
 			if (tmp->value != NULL)
 				shell->envp[i] = ft_strjoin(tmp2, tmp->value);
-			free(tmp2);
+			if (tmp2 != NULL)
+				free(tmp2);
 		}
 		tmp = tmp->next;
 		i++;
