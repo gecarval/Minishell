@@ -6,7 +6,7 @@
 /*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 16:06:42 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/15 06:10:21 by gecarval         ###   ########.fr       */
+/*   Updated: 2024/12/15 06:36:38 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,27 @@
 
 char	*ft_get_bin_based_on_path(char *bin_route, t_shell *shell, t_cmd *cmd)
 {
-	char	*tmp;
-	char	**path;
-	int		i;
+	struct stat	buf;
+	char		*tmp;
+	char		**path;
+	int			i;
 
 	i = -1;
 	tmp = ft_getenv("PATH", &shell->envp_list);
 	path = ft_split(tmp, ':');
 	while (path[++i] != NULL)
 	{
+		buf.st_mode = 0;
 		tmp = ft_strjoin(path[i], "/");
 		bin_route = ft_strjoin(tmp, cmd->cmd);
+		stat(bin_route, &buf);
 		free(tmp);
-		if (access(bin_route, F_OK) == 0)
-		{
+		if (access(bin_route, F_OK) == 0 && !S_ISDIR(buf.st_mode))
 			ft_free_args(path);
+		if (access(bin_route, F_OK) == 0 && !S_ISDIR(buf.st_mode))
 			return (bin_route);
-		}
-		free(bin_route);
+		if (bin_route != NULL)
+			free(bin_route);
 	}
 	ft_free_args(path);
 	return (ft_strdup(cmd->cmd));
