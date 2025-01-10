@@ -23,7 +23,7 @@ pid_t	ft_fork(t_shell *shell)
 	if (pid < 0)
 	{
 		ft_putstr_fd("minishell: fork failed\n", 2);
-		ft_free_all(shell, true);
+		ft_free_all(shell, true, false);
 		exit(2);
 	}
 	return (pid);
@@ -36,7 +36,7 @@ void	ft_execve(char *bin, char **args, char **env, t_shell *shell)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(bin, 2);
 		ft_putstr_fd(": command not found\n", 2);
-		ft_free_all(shell, true);
+		ft_free_all(shell, true, false);
 		if (bin != NULL)
 			free(bin);
 		exit(127);
@@ -68,7 +68,7 @@ void	ft_dup2_errors(char *filename, t_shell *shell)
 			ft_putstr_fd(filename, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 	}
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	exit(1);
 }
 
@@ -79,7 +79,7 @@ void	ft_dup2(int fd, int fd2, t_shell *shell, char *filename)
 	if (dup2(fd, fd2) == -1)
 	{
 		ft_putstr_fd("minishell: dup2 failed\n", 2);
-		ft_free_all(shell, true);
+		ft_free_all(shell, true, false);
 		exit(2);
 	}
 }

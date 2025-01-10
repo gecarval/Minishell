@@ -6,7 +6,7 @@
 /*   By: badriano <badriano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 11:16:11 by gecarval          #+#    #+#             */
-/*   Updated: 2024/12/14 15:51:37 by badriano         ###   ########.fr       */
+/*   Updated: 2025/01/09 08:15:07 by gecarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_exit(t_shell *shell, int flag)
 		ft_putstr_fd("exit\n", 1);
 	if (ft_lstsize_cmd(shell->cmd) > 1)
 		return (fd);
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	exit(fd);
 	return (0);
 }

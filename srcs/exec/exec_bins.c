@@ -56,7 +56,7 @@ void	ft_exec_on_path(t_shell *shell, t_cmd *cmd)
 			ft_putstr_fd("minishell: \n", 2);
 			ft_putstr_fd(cmd->cmd, 2);
 			ft_putstr_fd(": command not found\n", 2);
-			ft_free_all(shell, true);
+			ft_free_all(shell, true, false);
 			exit(127);
 		}
 		bin_route = ft_get_bin_based_on_path(bin_route, shell, cmd);

@@ -20,7 +20,7 @@ static void	signal_heredoc(int signum)
 	fds = ft_fd_address(NULL);
 	close(fds->fd_in);
 	free(fds->filename_in);
-	ft_free_all(ft_shell_address(NULL), true);
+	ft_free_all(ft_shell_address(NULL), true, false);
 	exit(130);
 }
 
@@ -49,14 +49,14 @@ static void	ft_exec_heredoc_on_child(t_fd *fds, t_shell *shell)
 			free(line);
 			break ;
 		}
-		ft_expand_sign_matrix(&line, shell, 1);
+		ft_expand_sign_matrix(&line, shell, true);
 		write(fds->fd_in, line, ft_strlen(line));
 		write(fds->fd_in, "\n", 1);
 		free(line);
 	}
 	close(fds->fd_in);
 	free(fds->filename_in);
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	exit(0);
 }
 

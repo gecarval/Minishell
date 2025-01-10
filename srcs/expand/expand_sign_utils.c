@@ -36,7 +36,7 @@ bool	ft_is_end_of_var(char *matrix, int block_flag, int inside_quotes, int j)
 
 void	ft_quotes_block_toggle(char c, int *block_flag, int *inside_quotes)
 {
-	if (c == '\"')
+	if (c == '\"' && *block_flag == 0)
 		*inside_quotes += 1;
 	if (c == '\'' && *block_flag == 1 && *inside_quotes % 2 != 1)
 		*block_flag = 0;

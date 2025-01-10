@@ -27,13 +27,13 @@ static void	ft_child_pipe(t_cmd *cmd, t_shell *shell)
 	{
 		if (cmd->next != NULL)
 			close(shell->pipe_fd[1]);
-		ft_free_all(shell, true);
+		ft_free_all(shell, true, false);
 		exit(shell->status);
 	}
 	ft_exec_on_path(shell, cmd);
 	if (cmd->next != NULL)
 		close(shell->pipe_fd[1]);
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	exit(shell->status);
 }
 
@@ -76,7 +76,7 @@ int	ft_exec_if_pipe(t_cmd *cmd, t_shell *shell)
 	while (++pid < ft_lstsize_cmd(shell->cmd))
 		wait(NULL);
 	ft_crtl_c(shell->status);
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	return (shell->status);
 }
 
@@ -89,11 +89,11 @@ int	ft_normal_exec(t_cmd *cmd, t_shell *shell)
 		ft_dup2(cmd->fd.fd_in, STDIN_FILENO, shell, cmd->fd.filename_in);
 	if (ft_exec_on_builtin(cmd, shell) >= 0)
 	{
-		ft_free_all(shell, true);
+		ft_free_all(shell, true, false);
 		exit(shell->status);
 	}
 	ft_exec_on_path(shell, cmd);
-	ft_free_all(shell, true);
+	ft_free_all(shell, true, false);
 	return (shell->status);
 }
 
